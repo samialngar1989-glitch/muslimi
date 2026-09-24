@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 مُسلِمي — رفيق المسلم اليومي</title>
+<meta name="theme-color" content="#0d5e4a">
+<meta name="description" content="تطبيق المسلم الشامل: مواقيت الصلاة، الأذكار، القرآن الكريم، القبلة، والتقويم الهجري">
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app">
+  
+  <!-- الهيدر -->
+  <header class="header">
+    <div class="header-right">
+      <div class="header-logo">
+        <i class="fas fa-mosque"></i>
+        <span>مُسلِمي</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="locationBtn" title="تحديد الموقع">
+        <i class="fas fa-map-marker-alt"></i>
+      </button>
+      <button class="icon-btn" id="themeBtn" title="الوضع الليلي">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="icon-btn" id="installPwaBtn" title="تثبيت التطبيق" style="display:none;background:var(--success);color:#fff;">
+        <i class="fas fa-download"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- المحتوى -->
+  <main class="main-content">
+    
+    <!-- ═══ الصفحة الرئيسية: مواقيت الصلاة ═══ -->
+    <div class="page active" id="page-home">
+      
+      <!-- بطاقة الترحيب -->
+      <div class="welcome-card">
+        <div class="hijri-date" id="hijriDate">جاري التحميل...</div>
+        <div class="gregorian-date" id="gregorianDate"></div>
+        <div class="location-name" id="locationName">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>جاري تحديد الموقع...</span>
+        </div>
+      </div>
+
+      <!-- العدّاد للصلاة القادمة -->
+      <div class="next-prayer-card">
+        <div class="next-prayer-label">الصلاة القادمة</div>
+        <div class="next-prayer-name" id="nextPrayerName">—</div>
+        <div class="next-prayer-countdown" id="nextPrayerCountdown">00:00:00</div>
+        <div class="next-prayer-time" id="nextPrayerTime">—</div>
+      </div>
+
+      <!-- بطاقة مواقيت الصلاة -->
+      <div class="prayer-times-card">
+        <div class="card-title-bar">
+          <i class="fas fa-clock"></i>
+          <span>مواقيت الصلاة اليوم</span>
+        </div>
+        
+        <div class="prayer-list" id="prayerList">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري جلب المواقيت...</p>
+          </div>
+        </div>
+        
+        <div class="prayer-footer">
+          <button class="btn-sm" onclick="refreshPrayerTimes()">
+            <i class="fas fa-sync-alt"></i> تحديث
+          </button>
+          <button class="btn-sm" onclick="changeLocation()">
+            <i class="fas fa-map-marker-alt"></i> تغيير الموقع
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ صفحة الأذكار ═══ -->
+    <div class="page" id="page-adhkar">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-praying-hands"></i> الأذكار والأدعية</h1>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="quick-card" onclick="openAdhkar('morning')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#fbbf24,#d97706);">
+            <i class="fas fa-sun"></i>
+          </div>
+          <div class="quick-title">أذكار الصباح</div>
+          <div class="quick-desc">تُقال بعد الفجر</div>
+        </div>
+        
+        <div class="quick-card" onclick="openAdhkar('evening')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);">
+            <i class="fas fa-moon"></i>
+          </div>
+          <div class="quick-title">أذكار المساء</div>
+          <div class="quick-desc">تُقال بعد العصر</div>
+        </div>
+        
+        <div class="quick-card" onclick="openAdhkar('sleep')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#1e293b,#0f172a);">
+            <i class="fas fa-bed"></i>
+          </div>
+          <div class="quick-title">أذكار النوم</div>
+          <div class="quick-desc">قبل النوم</div>
+        </div>
+        
+        <div class="quick-card" onclick="openAdhkar('prayer')">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#22c55e,#15803d);">
+            <i class="fas fa-mosque"></i>
+          </div>
+          <div class="quick-title">أذكار بعد الصلاة</div>
+          <div class="quick-desc">بعد كل صلاة</div>
+        </div>
+        
+        <div class="quick-card" onclick="openTasbih()">
+          <div class="quick-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);">
+            <i class="fas fa-hand-holding-heart"></i>
+          </div>
+          <div class="quick-title">التسبيح الإلكتروني</div>
+          <div class="quick-desc">عدّاد التسبيح</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة القرآن ═══ -->
+    <div class="page" id="page-quran">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-book-open"></i> القرآن الكريم</h1>
+      </div>
+      
+      <div class="card">
+        <div class="quran-placeholder">
+          <i class="fas fa-book-quran" style="font-size:60px;color:var(--primary);margin-bottom:15px;"></i>
+          <h3>قريبًا بإذن الله</h3>
+          <p style="color:var(--text-muted);margin-top:8px;">سيكون القرآن متاحًا للقراءة بدون إنترنت</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة القبلة ═══ -->
+    <div class="page" id="page-qibla">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
+      </div>
+      
+      <div class="card">
+        <div class="qibla-placeholder">
+          <i class="fas fa-compass" style="font-size:80px;color:var(--primary);margin-bottom:15px;"></i>
+          <h3>قريبًا بإذن الله</h3>
+          <p style="color:var(--text-muted);margin-top:8px;">بوصلة دقيقة نحو الكعبة المشرفة</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة التقويم ═══ -->
+    <div class="page" id="page-calendar">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-calendar-alt"></i> التقويم الهجري</h1>
+      </div>
+      
+      <div class="card">
+        <div style="text-align:center;padding:30px;">
+          <div style="font-size:32px;font-weight:800;color:var(--primary);margin-bottom:10px;" id="hijriBigDate">—</div>
+          <div style="font-size:16px;color:var(--text-muted);" id="gregorianBigDate">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة الزكاة ═══ -->
+    <div class="page" id="page-zakat">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-hand-holding-usd"></i> حاسبة الزكاة</h1>
+      </div>
+      
+      <div class="card">
+        <div class="zakat-placeholder">
+          <i class="fas fa-coins" style="font-size:80px;color:var(--gold);margin-bottom:15px;"></i>
+          <h3>قريبًا بإذن الله</h3>
+          <p style="color:var(--text-muted);margin-top:8px;">حاسبة الزكاة للمال والذهب والفضة</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة الإحصائيات ═══ -->
+    <div class="page" id="page-stats">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-chart-line"></i> إحصائياتي</h1>
+      </div>
+      
+      <div class="card">
+        <div class="stats-placeholder">
+          <i class="fas fa-chart-pie" style="font-size:80px;color:var(--primary);margin-bottom:15px;"></i>
+          <h3>قريبًا بإذن الله</h3>
+          <p style="color:var(--text-muted);margin-top:8px;">متابعة عباداتك اليومية</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="bottom-nav">
+    <div class="nav-btn active" data-page="home" onclick="navigateTo('home')">
+      <i class="fas fa-home"></i>
+      <span>الرئيسية</span>
+    </div>
+    <div class="nav-btn" data-page="adhkar" onclick="navigateTo('adhkar')">
+      <i class="fas fa-praying-hands"></i>
+      <span>الأذكار</span>
+    </div>
+    <div class="nav-btn" data-page="quran" onclick="navigateTo('quran')">
+      <i class="fas fa-book-open"></i>
+      <span>القرآن</span>
+    </div>
+    <div class="nav-btn" data-page="qibla" onclick="navigateTo('qibla')">
+      <i class="fas fa-compass"></i>
+      <span>القبلة</span>
+    </div>
+    <div class="nav-btn" data-page="zakat" onclick="navigateTo('zakat')">
+      <i class="fas fa-coins"></i>
+      <span>الزكاة</span>
+    </div>
+  </nav>
+
+</div>
+
+<!-- نافذة الأذكار -->
+<div class="modal-overlay" id="adhkarModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="adhkarModalTitle">الأذكار</h2>
+      <button class="modal-close" onclick="closeAdhkarModal()">✕</button>
+    </div>
+    <div class="modal-body" id="adhkarBody">
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري التحميل...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة التسبيح -->
+<div class="modal-overlay" id="tasbihModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title"><i class="fas fa-hand-holding-heart"></i> التسبيح الإلكتروني</h2>
+      <button class="modal-close" onclick="closeTasbihModal()">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="margin-bottom:20px;">
+        <select id="tasbihType" class="form-select" style="max-width:250px;margin:0 auto;" onchange="resetTasbih()">
+          <option value="subhan">سبحان الله</option>
+          <option value="hamd">الحمد لله</option>
+          <option value="akbar">الله أكبر</option>
+          <option value="tahlil">لا إله إلا الله</option>
+          <option value="hawla">لا حول ولا قوة إلا بالله</option>
+          <option value="salah">اللهم صلِّ على محمد</option>
+        </select>
+      </div>
+      
+      <div class="tasbih-display">
+        <div class="tasbih-count" id="tasbihCount">0</div>
+        <div class="tasbih-text" id="tasbihText">سبحان الله</div>
+      </div>
+      
+      <button class="btn-tasbih" onclick="incrementTasbih()">
+        <i class="fas fa-plus"></i>
+      </button>
+      
+      <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;">
+        <button class="btn-sm" onclick="resetTasbih()">
+          <i class="fas fa-redo"></i> إعادة
+        </button>
+        <button class="btn-sm" onclick="saveTasbih()">
+          <i class="fas fa-save"></i> حفظ
+        </button>
+      </div>
+      
+      <div style="margin-top:15px;font-size:12px;color:var(--text-muted);">
+        عدد التسبيحات المحفوظة: <span id="savedTasbih">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/prayer.js"></script>
+<script src="js/adhkar.js"></script>
+<script src="js/quran.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+  </html>
