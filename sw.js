@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muslimi-v3';
+const CACHE_NAME = 'muslimi-v4';
 const URLS_TO_CACHE = [
   './', './index.html',
   './css/styles.css',
@@ -29,4 +29,45 @@ self.addEventListener('fetch', event => {
       return res;
     }).catch(() => cached))
   );
+});
+// ═══════════════════════════════════════════════════════════
+// 🔔 دعم الإشعارات في Service Worker
+// ═══════════════════════════════════════════════════════════
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      // إذا كان التطبيق مفتوحًا، ركّز عليه
+      for (const client of clientList) {
+        if (client.url.includes('muslimi') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // إذا لم يكن مفتوحًا، افتحه
+      if (clients.openWindow) {
+        return clients.openWindow('./');
+      }
+    })
+  );
+});
+
+// دعم الإشعارات الدفعية (مستقبلاً)
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  
+  try {
+    const data = event.data.json();
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'مُسلِمي', {
+        body: data.body || '',
+        icon: data.icon,
+        dir: 'rtl',
+        lang: 'ar',
+        vibrate: [200, 100, 200]
+      })
+    );
+  } catch (e) {
+    console.error(e);
+  }
 });
