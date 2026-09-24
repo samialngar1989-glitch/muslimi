@@ -275,13 +275,23 @@ async function openSurah(surahNumber) {
     }
     
     // 4. عرض السورة
-    renderSurah(surahData);
-    
-    loading.style.display = 'none';
-    content.style.display = 'block';
-    
-    // تحديث حالة أزرار التنقل
-    updateNavigationButtons();
+renderSurah(surahData);
+
+loading.style.display = 'none';
+content.style.display = 'block';
+
+// إظهار زر الحفظ
+const saveBtn = document.getElementById('saveMarkerBtn');
+if (saveBtn) saveBtn.style.display = 'flex';
+
+// عرض شريط الاستئناف
+await renderResumeBar(surahNumber);
+
+// بدء الحفظ التلقائي
+startAutoSave();
+
+// تحديث حالة أزرار التنقل
+updateNavigationButtons();
     
   } catch (error) {
     console.error(error);
@@ -427,5 +437,297 @@ async function initQuran() {
     console.error('فشل تهيئة القرآن:', error);
   }
 }
+// ═══════════════════════════════════════════════════════════
+// 🔖 نظام حفظ موضع القراءة (Bookmark)
+// ═══════════════════════════════════════════════════════════
 
+const MARKER_KEY = 'quran_last_reading';
+
+// حفظ الموضع الحالي
+async function saveMarker(surahNumber, ayahNumber, surahName) {
+  const marker = {
+    surahNumber,
+    surahName,
+    ayahNumber,
+    timestamp: Date.now(),
+    dateStr: new Date().toLocaleString('ar-YE', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  };
+  
+  localStorage.setItem(MARKER_KEY, JSON.stringify(marker));
+  await saveMeta('lastReading', marker);
+  
+  return marker;
+}
+
+// جلب الموضع المحفوظ
+async function getMarker() {
+  try {
+    const local = localStorage.getItem(MARKER_KEY);
+    if (local) return JSON.parse(local);
+    
+    const meta = await getMeta('lastReading');
+    return meta || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// عرض بطاقة المتابعة في صفحة القرآن
+async function renderResumeCard() {
+  const container = document.getElementById('resumeCardContainer');
+  if (!container) return;
+  
+  const marker = await getMarker();
+  
+  if (!marker) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  container.innerHTML = `
+    <div class="resume-card" onclick="resumeReading()">
+      <div class="resume-icon">
+        <i class="fas fa-bookmark"></i>
+      </div>
+      <div class="resume-info">
+        <div class="resume-label">متابعة القراءة</div>
+        <div class="resume-surah">${escapeHtml(marker.surahName)}</div>
+        <div class="resume-ayah">الآية ${marker.ayahNumber}</div>
+        <div class="resume-time">${escapeHtml(marker.dateStr)}</div>
+      </div>
+      <div class="resume-arrow">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+    </div>
+  `;
+}
+
+// استئناف القراءة من الموضع المحفوظ
+async function resumeReading() {
+  const marker = await getMarker();
+  if (!marker) return;
+  
+  currentSurahNumber = marker.surahNumber;
+  await openSurah(marker.surahNumber);
+  
+  // بعد فتح السورة، انتقل للآية
+  setTimeout(() => {
+    scrollToAyah(marker.ayahNumber, true);
+  }, 600);
+}
+
+// الانتقال لآية معينة
+function scrollToAyah(ayahNumber, highlight = true) {
+  const ayahNumbers = document.querySelectorAll('.ayah-number');
+  const target = Array.from(ayahNumbers).find(el => 
+    parseInt(el.textContent) === parseInt(ayahNumber)
+  );
+  
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    if (highlight) {
+      const ayahContainer = target.closest('.ayah-container');
+      const textEl = target.previousElementSibling;
+      
+      if (textEl) {
+        textEl.classList.add('ayah-highlight');
+        setTimeout(() => textEl.classList.remove('ayah-highlight'), 5000);
+      }
+    }
+  }
+}
+
+// حفظ الموضع الحالي (يدوي أو تلقائي)
+async function saveCurrentMarker() {
+  if (!currentSurahNumber) return;
+  
+  const surahMeta = surahsList.find(s => s.number === currentSurahNumber);
+  if (!surahMeta) return;
+  
+  // ابحث عن الآية الأقرب لمنتصف الشاشة
+  const ayahNumbers = document.querySelectorAll('.ayah-number');
+  if (!ayahNumbers.length) {
+    // احفظ السورة كاملة من أول آية
+    await saveMarker(currentSurahNumber, 1, surahMeta.name);
+    showSaveToast('تم حفظ البداية');
+    return;
+  }
+  
+  const viewportMiddle = window.innerHeight / 2;
+  let closestAyah = null;
+  let minDistance = Infinity;
+  
+  ayahNumbers.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const distance = Math.abs(rect.top - viewportMiddle);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestAyah = parseInt(el.textContent);
+    }
+  });
+  
+  if (closestAyah) {
+    await saveMarker(currentSurahNumber, closestAyah, surahMeta.name);
+    showSaveToast('تم حفظ الموضع');
+    
+    // تأثير على الزر
+    const btn = document.getElementById('saveMarkerBtn');
+    if (btn) {
+      btn.classList.add('saved');
+      btn.innerHTML = '<i class="fas fa-check"></i>';
+      setTimeout(() => {
+        btn.classList.remove('saved');
+        btn.innerHTML = '<i class="fas fa-bookmark"></i>';
+      }, 2000);
+    }
+  }
+}
+
+// إظهار إشعار الحفظ
+function showSaveToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'save-toast';
+  toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'toastDown 0.3s reverse';
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
+}
+
+// عرض شريط الاستئناف داخل القارئ
+async function renderResumeBar(surahNumber) {
+  const container = document.getElementById('resumeBarContainer');
+  if (!container) return;
+  
+  const marker = await getMarker();
+  
+  if (!marker || marker.surahNumber !== surahNumber) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  // عرض شريط فقط إذا كانت الآية > 1
+  if (marker.ayahNumber <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  // عرض لثوانٍ ثم يختفي تلقائيًا
+  container.innerHTML = `
+    <div class="resume-bar">
+      <div class="resume-bar-info">
+        <i class="fas fa-bookmark"></i>
+        <span>آخر قراءة: الآية ${marker.ayahNumber}</span>
+      </div>
+      <div class="resume-bar-actions">
+        <button class="resume-bar-btn" onclick="resumeToAyah(${marker.ayahNumber})">
+          <i class="fas fa-arrow-left"></i> متابعة
+        </button>
+        <button class="resume-bar-btn" onclick="dismissResumeBar()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // اختفاء تلقائي بعد 8 ثوانٍ
+  setTimeout(() => {
+    dismissResumeBar();
+  }, 8000);
+}
+
+function resumeToAyah(ayahNumber) {
+  scrollToAyah(ayahNumber, true);
+  dismissResumeBar();
+}
+
+function dismissResumeBar() {
+  const container = document.getElementById('resumeBarContainer');
+  if (container) container.innerHTML = '';
+}
+
+// حفظ تلقائي عند مغادرة الصفحة
+window.addEventListener('beforeunload', () => {
+  if (currentSurahNumber && document.getElementById('page-surah-reader').classList.contains('active')) {
+    // حفظ سريع بدون انتظار
+    const surahMeta = surahsList.find(s => s.number === currentSurahNumber);
+    if (surahMeta) {
+      const ayahNumbers = document.querySelectorAll('.ayah-number');
+      if (ayahNumbers.length) {
+        const viewportMiddle = window.innerHeight / 2;
+        let closestAyah = 1;
+        let minDistance = Infinity;
+        
+        ayahNumbers.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const distance = Math.abs(rect.top - viewportMiddle);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestAyah = parseInt(el.textContent);
+          }
+        });
+        
+        const marker = {
+          surahNumber: currentSurahNumber,
+          surahName: surahMeta.name,
+          ayahNumber: closestAyah,
+          timestamp: Date.now(),
+          dateStr: new Date().toLocaleString('ar-YE', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        };
+        localStorage.setItem(MARKER_KEY, JSON.stringify(marker));
+      }
+    }
+  }
+});
+
+// حفظ تلقائي كل 10 ثوانٍ أثناء القراءة
+let autoSaveTimer = null;
+
+function startAutoSave() {
+  if (autoSaveTimer) clearInterval(autoSaveTimer);
+  autoSaveTimer = setInterval(() => {
+    if (currentSurahNumber && document.getElementById('page-surah-reader').classList.contains('active')) {
+      saveCurrentMarkerQuietly();
+    }
+  }, 10000);
+}
+
+async function saveCurrentMarkerQuietly() {
+  if (!currentSurahNumber) return;
+  const surahMeta = surahsList.find(s => s.number === currentSurahNumber);
+  if (!surahMeta) return;
+  
+  const ayahNumbers = document.querySelectorAll('.ayah-number');
+  if (!ayahNumbers.length) return;
+  
+  const viewportMiddle = window.innerHeight / 2;
+  let closestAyah = 1;
+  let minDistance = Infinity;
+  
+  ayahNumbers.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const distance = Math.abs(rect.top - viewportMiddle);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestAyah = parseInt(el.textContent);
+    }
+  });
+  
+  await saveMarker(currentSurahNumber, closestAyah, surahMeta.name);
+}
 console.log('📖 quran.js تم التحميل');
