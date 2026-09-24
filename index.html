@@ -6,7 +6,7 @@
 <title>🌙 مُسلِمي — رفيق المسلم اليومي</title>
 <meta name="theme-color" content="#0d5e4a">
 <meta name="description" content="تطبيق المسلم الشامل: مواقيت الصلاة، الأذكار، القرآن الكريم، القبلة، والتقويم الهجري">
-
+<meta name="notification-icon" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM4IiBmaWxsPSIjMGQ1ZTRhIi8+PHRleHQgeD0iOTYiIHk9IjEyNSIgZm9udC1zaXplPSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNkNGE3NDciPvCfjplIPC90ZXh0Pjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="manifest" href="manifest.json">
@@ -279,7 +279,135 @@
         </div>
       </div>
     </div>
-
+<!-- ═══ صفحة الإعدادات ═══ -->
+<div class="page" id="page-settings">
+  <div class="page-header">
+    <h1 class="page-title"><i class="fas fa-cog"></i> الإعدادات</h1>
+  </div>
+  
+  <!-- إشعارات الأذان -->
+  <div class="card" style="margin-bottom:15px;">
+    <div class="card-title-bar">
+      <i class="fas fa-bell"></i>
+      <span>إشعارات الأذان</span>
+    </div>
+    
+    <div style="padding:20px;">
+      
+      <!-- زر التفعيل الرئيسي -->
+      <div class="settings-item">
+        <div class="settings-info">
+          <div class="settings-label">تفعيل إشعارات الأذان</div>
+          <div class="settings-desc" id="notifStatusText">غير مفعّلة</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="notifToggle" onchange="toggleNotifications()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <!-- خيارات متقدمة -->
+      <div id="notifOptions" style="display:none;">
+        
+        <div class="settings-divider"></div>
+        
+        <!-- وقت التنبيه -->
+        <div class="settings-section-title">
+          <i class="fas fa-clock"></i> وقت التنبيه
+        </div>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="notifTiming" value="0" checked onchange="saveNotifSettings()">
+            <span>عند الأذان</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="notifTiming" value="5" onchange="saveNotifSettings()">
+            <span>قبل 5 دقائق</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="notifTiming" value="10" onchange="saveNotifSettings()">
+            <span>قبل 10 دقائق</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="notifTiming" value="15" onchange="saveNotifSettings()">
+            <span>قبل 15 دقيقة</span>
+          </label>
+        </div>
+        
+        <div class="settings-divider"></div>
+        
+        <!-- اختيار الصلوات -->
+        <div class="settings-section-title">
+          <i class="fas fa-mosque"></i> الصلوات المُنبَّه عليها
+        </div>
+        <div class="prayers-toggle-grid">
+          <label class="prayer-toggle-item">
+            <input type="checkbox" class="prayer-notif" value="Fajr" checked onchange="saveNotifSettings()">
+            <span class="prayer-toggle-btn">
+              <i class="fas fa-cloud-moon"></i>
+              <span>الفجر</span>
+            </span>
+          </label>
+          <label class="prayer-toggle-item">
+            <input type="checkbox" class="prayer-notif" value="Dhuhr" checked onchange="saveNotifSettings()">
+            <span class="prayer-toggle-btn">
+              <i class="fas fa-sun"></i>
+              <span>الظهر</span>
+            </span>
+          </label>
+          <label class="prayer-toggle-item">
+            <input type="checkbox" class="prayer-notif" value="Asr" checked onchange="saveNotifSettings()">
+            <span class="prayer-toggle-btn">
+              <i class="fas fa-cloud-sun"></i>
+              <span>العصر</span>
+            </span>
+          </label>
+          <label class="prayer-toggle-item">
+            <input type="checkbox" class="prayer-notif" value="Maghrib" checked onchange="saveNotifSettings()">
+            <span class="prayer-toggle-btn">
+              <i class="fas fa-sun"></i>
+              <span>المغرب</span>
+            </span>
+          </label>
+          <label class="prayer-toggle-item">
+            <input type="checkbox" class="prayer-notif" value="Isha" checked onchange="saveNotifSettings()">
+            <span class="prayer-toggle-btn">
+              <i class="fas fa-moon"></i>
+              <span>العشاء</span>
+            </span>
+          </label>
+        </div>
+        
+        <div class="settings-divider"></div>
+        
+        <!-- إشعار تجريبي -->
+        <button class="btn-primary-full" onclick="testNotification()">
+          <i class="fas fa-paper-plane"></i> إرسال إشعار تجريبي
+        </button>
+        
+        <div class="settings-note">
+          <i class="fas fa-info-circle"></i>
+          <span>للحصول على أفضل النتائج: ثبّت التطبيق على شاشة هاتفك واسمح بالإشعارات.</span>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- معلومات عن التطبيق -->
+  <div class="card">
+    <div class="card-title-bar">
+      <i class="fas fa-info-circle"></i>
+      <span>عن التطبيق</span>
+    </div>
+    <div style="padding:20px;text-align:center;">
+      <div style="font-size:40px;margin-bottom:10px;">🕌</div>
+      <div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:5px;">مُسلِمي</div>
+      <div style="font-size:12px;color:var(--text-muted);">الإصدار 1.0.0</div>
+    </div>
+  </div>
+</div>
     <!-- ═══ صفحة الإحصائيات ═══ -->
     <div class="page" id="page-stats">
       <div class="page-header">
@@ -319,6 +447,10 @@
       <i class="fas fa-coins"></i>
       <span>الزكاة</span>
     </div>
+    <div class="nav-btn" data-page="settings" onclick="navigateTo('settings')">
+  <i class="fas fa-cog"></i>
+  <span>الإعدادات</span>
+</div>
   </nav>
 
 </div>
@@ -388,6 +520,7 @@
 <script src="js/adhkar.js"></script>
 <script src="js/quran.js"></script>
 <script src="js/tools.js"></script>
+  <script src="js/notifications.js"></script>
 <script src="js/main.js"></script>
 
 </body>
