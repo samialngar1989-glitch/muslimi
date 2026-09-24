@@ -347,13 +347,28 @@ function renderSurah(surahData) {
   }
 }
 
-function closeSurahReader() {
+async function closeSurahReader() {
+  // حفظ الموضع قبل الخروج
+  await saveCurrentMarkerQuietly();
+  
+  // إيقاف الحفظ التلقائي
+  if (autoSaveTimer) {
+    clearInterval(autoSaveTimer);
+    autoSaveTimer = null;
+  }
+  
+  // إخفاء زر الحفظ
+  const saveBtn = document.getElementById('saveMarkerBtn');
+  if (saveBtn) saveBtn.style.display = 'none';
+  
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-quran').classList.add('active');
   document.querySelector('.nav-btn[data-page="quran"]')?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // تحديث بطاقة المتابعة
+  await renderResumeCard();
 }
-
 // ═══════════════════════════════════════════════════════════
 // 🎨 إعدادات القارئ
 // ═══════════════════════════════════════════════════════════
@@ -432,6 +447,9 @@ async function initQuran() {
     
     // تحميل قائمة السور
     await loadSurahsList();
+    
+    // عرض بطاقة المتابعة
+    await renderResumeCard();
     
   } catch (error) {
     console.error('فشل تهيئة القرآن:', error);
