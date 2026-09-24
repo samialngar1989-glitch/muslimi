@@ -1126,3 +1126,218 @@ button, input, select, textarea { font-family: inherit; }
   .surah-content { padding: 20px 15px; }
   .reader-surah-name { font-size: 16px; }
 }
+/* ═══════════════════════════════════════════════════ */
+/* 🔖 بطاقة متابعة القراءة                            */
+/* ═══════════════════════════════════════════════════ */
+
+.resume-card {
+  background: linear-gradient(135deg, #0d5e4a, #094438);
+  color: #fff;
+  padding: 18px;
+  border-radius: var(--radius);
+  margin-bottom: 15px;
+  box-shadow: 0 6px 20px rgba(13,94,74,.3);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(212,167,71,.15) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+.resume-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(13,94,74,.4);
+}
+
+.resume-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--accent);
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.resume-info {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.resume-label {
+  font-size: 11px;
+  opacity: .8;
+  margin-bottom: 3px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.resume-surah {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.resume-ayah {
+  font-size: 12px;
+  opacity: .9;
+}
+
+.resume-time {
+  font-size: 10px;
+  opacity: .7;
+  margin-top: 3px;
+}
+
+.resume-arrow {
+  color: var(--accent);
+  font-size: 20px;
+  position: relative;
+}
+
+/* شريط استئناف القراءة داخل القارئ */
+.resume-bar {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  animation: slideDown .4s;
+  box-shadow: 0 4px 12px rgba(217,119,6,.3);
+}
+
+.resume-bar-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.resume-bar-info i { font-size: 18px; }
+
+.resume-bar-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.resume-bar-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255,255,255,.25);
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  backdrop-filter: blur(10px);
+}
+
+.resume-bar-btn:hover {
+  background: rgba(255,255,255,.4);
+  transform: translateY(-1px);
+}
+
+/* تمييز الآية التي توقفت عندها */
+.ayah-highlight {
+  background: linear-gradient(135deg, rgba(212,167,71,.3), rgba(212,167,71,.15));
+  padding: 6px 10px;
+  border-radius: 8px;
+  border-right: 3px solid var(--accent);
+  animation: pulseHighlight 2s ease-in-out;
+}
+
+@keyframes pulseHighlight {
+  0%, 100% { background: linear-gradient(135deg, rgba(212,167,71,.3), rgba(212,167,71,.15)); }
+  50% { background: linear-gradient(135deg, rgba(212,167,71,.5), rgba(212,167,71,.3)); }
+}
+
+/* زر الحفظ اليدوي */
+.save-marker-btn {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-h) + 20px);
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: var(--grad-gold);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(217,119,6,.4);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  animation: pulseFAB 2s infinite;
+}
+
+.save-marker-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.save-marker-btn.saved {
+  background: var(--success);
+  animation: none;
+}
+
+@keyframes pulseFAB {
+  0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(217,119,6,.4); }
+  50% { transform: scale(1.05); box-shadow: 0 8px 28px rgba(217,119,6,.6); }
+}
+
+/* إشعار الحفظ */
+.save-toast {
+  position: fixed;
+  top: calc(var(--header-h) + 15px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--success);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(34,197,94,.4);
+  z-index: 9999;
+  animation: toastDown .3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes toastDown {
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* زر متابعة القراءة (الثلاث نقاط) */
+.reader-settings-btn.active {
+  background: var(--primary);
+  color: #fff;
+}
