@@ -44,3 +44,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   console.log('🌙 مُسلِمي v' + CONFIG.VERSION + ' — جاهز');
 });
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(() => console.log('✅ SW'));
+}
+
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('installPwaBtn');
+  if (btn) btn.style.display = 'flex';
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('installPwaBtn');
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        showToast('افتح قائمة المتصفح → إضافة للشاشة الرئيسية', 'info');
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      btn.style.display = 'none';
+    });
+  }
+});
