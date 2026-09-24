@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   startNextPrayerCountdown();
 // ═══ تهيئة القرآن ═══
 await initQuran();
+  // ═══ تهيئة الإشعارات ═══
+await initNotifications();
   // ═══ التحقق من الموقع المحفوظ ═══
   const savedLoc = localStorage.getItem('userLocation');
   if (savedLoc) {
