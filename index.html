@@ -144,7 +144,9 @@
   <div class="page-header">
     <h1 class="page-title"><i class="fas fa-book-open"></i> القرآن الكريم</h1>
   </div>
-  
+  <!-- بطاقة متابعة القراءة -->
+<div id="resumeCardContainer"></div>
+
   <!-- معلومات التخزين -->
   <div class="quran-info-bar" id="quranInfoBar">
     <i class="fas fa-database"></i>
@@ -201,8 +203,11 @@
     </div>
   </div>
   
-  <!-- حالة التحميل -->
-  <div id="readerLoading" class="reader-loading" style="display:none;">
+  <!-- شريط استئناف القراءة -->
+<div id="resumeBarContainer"></div>
+
+<!-- حالة التحميل -->
+<div id="readerLoading" class="reader-loading" style="display:none;">
     <i class="fas fa-spinner fa-spin"></i>
     <p>جاري تحميل السورة...</p>
     <div class="progress-bar-container">
@@ -213,8 +218,13 @@
   <!-- محتوى السورة -->
   <div class="surah-content" id="surahContent"></div>
   
-  <!-- الفاتحة في الأسفل -->
-  <div class="reader-footer">
+  <!-- زر الحفظ اليدوي -->
+<button class="save-marker-btn" id="saveMarkerBtn" onclick="saveCurrentMarker()" title="حفظ موضع القراءة" style="display:none;">
+  <i class="fas fa-bookmark"></i>
+</button>
+
+<!-- الفاتحة في الأسفل -->
+<div class="reader-footer">
     <button class="reader-nav-btn" onclick="goToPrevSurah()">
       <i class="fas fa-chevron-right"></i>
       <span>السورة السابقة</span>
