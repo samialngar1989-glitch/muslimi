@@ -7,11 +7,13 @@
 <meta name="theme-color" content="#0d5e4a">
 <meta name="description" content="تطبيق المسلم الشامل: مواقيت الصلاة، الأذكار، القرآن الكريم، القبلة، والتقويم الهجري">
 <meta name="notification-icon" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM4IiBmaWxsPSIjMGQ1ZTRhIi8+PHRleHQgeD0iOTYiIHk9IjEyNSIgZm9udC1zaXplPSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNkNGE3NDciPvCfjplIPC90ZXh0Pjwvc3ZnPg==">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="مُسلِمي">
+
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -139,229 +141,209 @@
     </div>
 
     <!-- ═══ صفحة القرآن ═══ -->
-    <!-- ═══ صفحة القرآن ═══ -->
-<div class="page" id="page-quran">
-  <div class="page-header">
-    <h1 class="page-title"><i class="fas fa-book-open"></i> القرآن الكريم</h1>
-  </div>
-  <!-- بطاقة متابعة القراءة -->
-<div id="resumeCardContainer"></div>
-
-  <!-- معلومات التخزين -->
-  <div class="quran-info-bar" id="quranInfoBar">
-    <i class="fas fa-database"></i>
-    <span id="quranCacheInfo">جاري التحميل...</span>
-  </div>
-  
-  <!-- شريط البحث -->
-  <div class="quran-search-bar">
-    <i class="fas fa-search"></i>
-    <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
-  </div>
-  
-  <!-- قائمة السور -->
-  <div class="surahs-list" id="surahsList">
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>جاري تحميل السور...</p>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ قارئ السورة (صفحة فرعية) ═══ -->
-<div class="page" id="page-surah-reader">
-  <div class="reader-header">
-    <button class="reader-back-btn" onclick="closeSurahReader()">
-      <i class="fas fa-arrow-right"></i>
-    </button>
-    <div class="reader-title-info">
-      <div class="reader-surah-name" id="readerSurahName">—</div>
-      <div class="reader-surah-subtitle" id="readerSurahSubtitle">—</div>
-    </div>
-    <button class="reader-settings-btn" onclick="toggleReaderSettings()">
-      <i class="fas fa-cog"></i>
-    </button>
-  </div>
-  
-  <!-- شريط التحكم بحجم الخط -->
-  <div class="reader-settings" id="readerSettings" style="display:none;">
-    <div class="reader-setting-item">
-      <label><i class="fas fa-text-height"></i> حجم الخط</label>
-      <div class="font-size-controls">
-        <button onclick="changeFontSize(-2)">−</button>
-        <span id="fontSizeDisplay">24</span>
-        <button onclick="changeFontSize(2)">+</button>
+    <div class="page" id="page-quran">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-book-open"></i> القرآن الكريم</h1>
       </div>
-    </div>
-    <div class="reader-setting-item">
-      <label><i class="fas fa-palette"></i> الوضع</label>
-      <div class="theme-toggle">
-        <button onclick="setReaderTheme('light')" id="themeLight">☀️</button>
-        <button onclick="setReaderTheme('sepia')" id="themeSepia">📜</button>
-        <button onclick="setReaderTheme('dark')" id="themeDark">🌙</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- شريط استئناف القراءة -->
-<div id="resumeBarContainer"></div>
-
-<!-- حالة التحميل -->
-<div id="readerLoading" class="reader-loading" style="display:none;">
-    <i class="fas fa-spinner fa-spin"></i>
-    <p>جاري تحميل السورة...</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar-fill" id="readerProgress"></div>
-    </div>
-  </div>
-  
-  <!-- محتوى السورة -->
-  <div class="surah-content" id="surahContent"></div>
-  
-  <!-- زر الحفظ اليدوي -->
-<button class="save-marker-btn" id="saveMarkerBtn" onclick="saveCurrentMarker()" title="حفظ موضع القراءة" style="display:none;">
-  <i class="fas fa-bookmark"></i>
-</button>
-
-<!-- الفاتحة في الأسفل -->
-<div class="reader-footer">
-    <button class="reader-nav-btn" onclick="goToPrevSurah()">
-      <i class="fas fa-chevron-right"></i>
-      <span>السورة السابقة</span>
-    </button>
-    <button class="reader-nav-btn" onclick="goToNextSurah()">
-      <span>السورة التالية</span>
-      <i class="fas fa-chevron-left"></i>
-    </button>
-  </div>
-</div>
-
-    <!-- ═══ صفحة القبلة ═══ -->
-    <!-- ═══ صفحة القبلة ═══ -->
-<div class="page" id="page-qibla">
-  <div class="page-header">
-    <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
-  </div>
-
-  <!-- معلومات الموقع -->
-  <div class="qibla-location-bar" id="qiblaLocationBar">
-    <i class="fas fa-map-marker-alt"></i>
-    <span id="qiblaLocation">جاري تحديد الموقع...</span>
-  </div>
-
-  <!-- البوصلة -->
-  <div class="compass-container">
-    <div class="compass-wrapper" id="compassWrapper">
       
-      <!-- حلقة البوصلة -->
-      <div class="compass-ring">
-        <!-- الاتجاهات الأصلية -->
-        <div class="compass-direction compass-n">N</div>
-        <div class="compass-direction compass-e">E</div>
-        <div class="compass-direction compass-s">S</div>
-        <div class="compass-direction compass-w">W</div>
-        
-        <!-- علامات صغيرة -->
-        <div class="compass-tick" style="transform: rotate(45deg);"></div>
-        <div class="compass-tick" style="transform: rotate(135deg);"></div>
-        <div class="compass-tick" style="transform: rotate(225deg);"></div>
-        <div class="compass-tick" style="transform: rotate(315deg);"></div>
-      </div>
+      <!-- بطاقة متابعة القراءة -->
+      <div id="resumeCardContainer"></div>
 
-      <!-- سهم القبلة -->
-      <div class="qibla-arrow-container" id="qiblaArrow">
-        <div class="qibla-arrow">
-          <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
-            <!-- جسم السهم -->
-            <path d="M50 5 L75 65 L50 55 L25 65 Z" 
-                  fill="url(#arrowGradient)" 
-                  stroke="#0d5e4a" 
-                  stroke-width="2"
-                  stroke-linejoin="round"/>
-            <!-- رأس الكعبة -->
-            <rect x="40" y="0" width="20" height="20" 
-                  fill="#0f172a" 
-                  stroke="#d4a747" 
-                  stroke-width="2"
-                  rx="2"/>
-            <text x="50" y="15" font-size="12" text-anchor="middle" fill="#d4a747" font-weight="bold">🕋</text>
-            <!-- تعريف التدرج -->
-            <defs>
-              <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#d4a747"/>
-                <stop offset="100%" stop-color="#b8862e"/>
-              </linearGradient>
-            </defs>
-          </svg>
+      <!-- معلومات التخزين -->
+      <div class="quran-info-bar" id="quranInfoBar">
+        <i class="fas fa-database"></i>
+        <span id="quranCacheInfo">جاري التحميل...</span>
+      </div>
+      
+      <!-- شريط البحث -->
+      <div class="quran-search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
+      </div>
+      
+      <!-- قائمة السور -->
+      <div class="surahs-list" id="surahsList">
+        <div class="loading-state">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>جاري تحميل السور...</p>
         </div>
       </div>
-
-      <!-- مركز البوصلة -->
-      <div class="compass-center">
-        <div class="compass-center-dot"></div>
-      </div>
-
     </div>
 
-    <!-- زاوية القبلة -->
-    <div class="qibla-angle-display" id="qiblaAngleDisplay">
-      <div class="qibla-angle-value" id="qiblaAngleValue">—°</div>
-      <div class="qibla-angle-label">اتجاه القبلة من الشمال</div>
-    </div>
-
-    <!-- حالة الاتجاه -->
-    <div class="qibla-status" id="qiblaStatus">
-      <i class="fas fa-compass"></i>
-      <span>جاري معايرة البوصلة...</span>
-    </div>
-
-    <!-- رسالة النجاح -->
-    <div class="qibla-success" id="qiblaSuccess" style="display:none;">
-      <i class="fas fa-check-circle"></i>
-      <div>
-        <div class="qibla-success-title">أنت متجه نحو القبلة</div>
-        <div class="qibla-success-sub">الآن يمكنك الصلاة 🕌</div>
-      </div>
-    </div>
-
-    <!-- تعليمات -->
-    <div class="qibla-instructions">
-      <div class="instruction-item">
-        <i class="fas fa-mobile-alt"></i>
-        <span>أمسك هاتفك أفقيًا</span>
-      </div>
-      <div class="instruction-item">
-        <i class="fas fa-rotate"></i>
-        <span>حرّك الهاتف على شكل ∞ للمعايرة</span>
-      </div>
-      <div class="instruction-item">
-        <i class="fas fa-location-arrow"></i>
-        <span>اتجه حتى يقترب السهم من الأعلى</span>
-      </div>
-    </div>
-
-    <!-- أزرار -->
-    <div class="qibla-actions">
-      <button class="btn-sm" onclick="recalibrateQibla()">
-        <i class="fas fa-sync-alt"></i> إعادة معايرة
-      </button>
-      <button class="btn-sm" onclick="reloadQiblaLocation()">
-        <i class="fas fa-map-marker-alt"></i> تحديث الموقع
-      </button>
-    </div>
-
-  </div>
-</div>
-    <!-- ═══ صفحة التقويم ═══ -->
-    <div class="page" id="page-calendar">
-      <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-calendar-alt"></i> التقويم الهجري</h1>
+    <!-- ═══ قارئ السورة ═══ -->
+    <div class="page" id="page-surah-reader">
+      <div class="reader-header">
+        <button class="reader-back-btn" onclick="closeSurahReader()">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <div class="reader-title-info">
+          <div class="reader-surah-name" id="readerSurahName">—</div>
+          <div class="reader-surah-subtitle" id="readerSurahSubtitle">—</div>
+        </div>
+        <button class="reader-settings-btn" onclick="toggleReaderSettings()">
+          <i class="fas fa-cog"></i>
+        </button>
       </div>
       
-      <div class="card">
-        <div style="text-align:center;padding:30px;">
-          <div style="font-size:32px;font-weight:800;color:var(--primary);margin-bottom:10px;" id="hijriBigDate">—</div>
-          <div style="font-size:16px;color:var(--text-muted);" id="gregorianBigDate">—</div>
+      <!-- شريط التحكم بحجم الخط -->
+      <div class="reader-settings" id="readerSettings" style="display:none;">
+        <div class="reader-setting-item">
+          <label><i class="fas fa-text-height"></i> حجم الخط</label>
+          <div class="font-size-controls">
+            <button onclick="changeFontSize(-2)">−</button>
+            <span id="fontSizeDisplay">24</span>
+            <button onclick="changeFontSize(2)">+</button>
+          </div>
+        </div>
+        <div class="reader-setting-item">
+          <label><i class="fas fa-palette"></i> الوضع</label>
+          <div class="theme-toggle">
+            <button onclick="setReaderTheme('light')" id="themeLight">☀️</button>
+            <button onclick="setReaderTheme('sepia')" id="themeSepia">📜</button>
+            <button onclick="setReaderTheme('dark')" id="themeDark">🌙</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- شريط استئناف القراءة -->
+      <div id="resumeBarContainer"></div>
+
+      <!-- حالة التحميل -->
+      <div id="readerLoading" class="reader-loading" style="display:none;">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>جاري تحميل السورة...</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="readerProgress"></div>
+        </div>
+      </div>
+      
+      <!-- محتوى السورة -->
+      <div class="surah-content" id="surahContent"></div>
+      
+      <!-- زر الحفظ اليدوي -->
+      <button class="save-marker-btn" id="saveMarkerBtn" onclick="saveCurrentMarker()" title="حفظ موضع القراءة" style="display:none;">
+        <i class="fas fa-bookmark"></i>
+      </button>
+
+      <!-- التنقل بين السور -->
+      <div class="reader-footer">
+        <button class="reader-nav-btn" onclick="goToPrevSurah()">
+          <i class="fas fa-chevron-right"></i>
+          <span>السورة السابقة</span>
+        </button>
+        <button class="reader-nav-btn" onclick="goToNextSurah()">
+          <span>السورة التالية</span>
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ صفحة القبلة ═══ -->
+    <div class="page" id="page-qibla">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
+      </div>
+
+      <!-- معلومات الموقع -->
+      <div class="qibla-location-bar" id="qiblaLocationBar">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="qiblaLocation">جاري تحديد الموقع...</span>
+      </div>
+
+      <!-- البوصلة -->
+      <div class="compass-container">
+        <div class="compass-wrapper" id="compassWrapper">
+          
+          <!-- حلقة البوصلة -->
+          <div class="compass-ring">
+            <div class="compass-direction compass-n">N</div>
+            <div class="compass-direction compass-e">E</div>
+            <div class="compass-direction compass-s">S</div>
+            <div class="compass-direction compass-w">W</div>
+            
+            <div class="compass-tick" style="transform: rotate(45deg);"></div>
+            <div class="compass-tick" style="transform: rotate(135deg);"></div>
+            <div class="compass-tick" style="transform: rotate(225deg);"></div>
+            <div class="compass-tick" style="transform: rotate(315deg);"></div>
+          </div>
+
+          <!-- سهم القبلة -->
+          <div class="qibla-arrow-container" id="qiblaArrow">
+            <div class="qibla-arrow">
+              <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 5 L75 65 L50 55 L25 65 Z" 
+                      fill="url(#arrowGradient)" 
+                      stroke="#0d5e4a" 
+                      stroke-width="2"
+                      stroke-linejoin="round"/>
+                <rect x="40" y="0" width="20" height="20" 
+                      fill="#0f172a" 
+                      stroke="#d4a747" 
+                      stroke-width="2"
+                      rx="2"/>
+                <text x="50" y="15" font-size="12" text-anchor="middle" fill="#d4a747" font-weight="bold">🕋</text>
+                <defs>
+                  <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#d4a747"/>
+                    <stop offset="100%" stop-color="#b8862e"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+
+          <!-- مركز البوصلة -->
+          <div class="compass-center">
+            <div class="compass-center-dot"></div>
+          </div>
+
+        </div>
+
+        <!-- زاوية القبلة -->
+        <div class="qibla-angle-display" id="qiblaAngleDisplay">
+          <div class="qibla-angle-value" id="qiblaAngleValue">—°</div>
+          <div class="qibla-angle-label">اتجاه القبلة من الشمال</div>
+        </div>
+
+        <!-- حالة الاتجاه -->
+        <div class="qibla-status" id="qiblaStatus">
+          <i class="fas fa-compass"></i>
+          <span>جاري معايرة البوصلة...</span>
+        </div>
+
+        <!-- رسالة النجاح -->
+        <div class="qibla-success" id="qiblaSuccess" style="display:none;">
+          <i class="fas fa-check-circle"></i>
+          <div>
+            <div class="qibla-success-title">أنت متجه نحو القبلة</div>
+            <div class="qibla-success-sub">الآن يمكنك الصلاة 🕌</div>
+          </div>
+        </div>
+
+        <!-- تعليمات -->
+        <div class="qibla-instructions">
+          <div class="instruction-item">
+            <i class="fas fa-mobile-alt"></i>
+            <span>أمسك هاتفك أفقيًا</span>
+          </div>
+          <div class="instruction-item">
+            <i class="fas fa-rotate"></i>
+            <span>حرّك الهاتف على شكل ∞ للمعايرة</span>
+          </div>
+          <div class="instruction-item">
+            <i class="fas fa-location-arrow"></i>
+            <span>اتجه حتى يقترب السهم من الأعلى</span>
+          </div>
+        </div>
+
+        <!-- أزرار -->
+        <div class="qibla-actions">
+          <button class="btn-sm" onclick="recalibrateQibla()">
+            <i class="fas fa-sync-alt"></i> إعادة معايرة
+          </button>
+          <button class="btn-sm" onclick="reloadQiblaLocation()">
+            <i class="fas fa-map-marker-alt"></i> تحديث الموقع
+          </button>
         </div>
       </div>
     </div>
@@ -371,155 +353,346 @@
       <div class="page-header">
         <h1 class="page-title"><i class="fas fa-hand-holding-usd"></i> حاسبة الزكاة</h1>
       </div>
-      
-      <div class="card">
-        <div class="zakat-placeholder">
-          <i class="fas fa-coins" style="font-size:80px;color:var(--gold);margin-bottom:15px;"></i>
-          <h3>قريبًا بإذن الله</h3>
-          <p style="color:var(--text-muted);margin-top:8px;">حاسبة الزكاة للمال والذهب والفضة</p>
-        </div>
-      </div>
-    </div>
-<!-- ═══ صفحة الإعدادات ═══ -->
-<div class="page" id="page-settings">
-  <div class="page-header">
-    <h1 class="page-title"><i class="fas fa-cog"></i> الإعدادات</h1>
-  </div>
-  
-  <!-- إشعارات الأذان -->
-  <div class="card" style="margin-bottom:15px;">
-    <div class="card-title-bar">
-      <i class="fas fa-bell"></i>
-      <span>إشعارات الأذان</span>
-    </div>
-    
-    <div style="padding:20px;">
-      
-      <!-- زر التفعيل الرئيسي -->
-      <div class="settings-item">
-        <div class="settings-info">
-          <div class="settings-label">تفعيل إشعارات الأذان</div>
-          <div class="settings-desc" id="notifStatusText">غير مفعّلة</div>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" id="notifToggle" onchange="toggleNotifications()">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      
-      <!-- خيارات متقدمة -->
-      <div id="notifOptions" style="display:none;">
-        
-        <div class="settings-divider"></div>
-        
-        <!-- وقت التنبيه -->
-        <div class="settings-section-title">
-          <i class="fas fa-clock"></i> وقت التنبيه
-        </div>
-        <div class="radio-group">
-          <label class="radio-option">
-            <input type="radio" name="notifTiming" value="0" checked onchange="saveNotifSettings()">
-            <span>عند الأذان</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="notifTiming" value="5" onchange="saveNotifSettings()">
-            <span>قبل 5 دقائق</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="notifTiming" value="10" onchange="saveNotifSettings()">
-            <span>قبل 10 دقائق</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="notifTiming" value="15" onchange="saveNotifSettings()">
-            <span>قبل 15 دقيقة</span>
-          </label>
-        </div>
-        
-        <div class="settings-divider"></div>
-        
-        <!-- اختيار الصلوات -->
-        <div class="settings-section-title">
-          <i class="fas fa-mosque"></i> الصلوات المُنبَّه عليها
-        </div>
-        <div class="prayers-toggle-grid">
-          <label class="prayer-toggle-item">
-            <input type="checkbox" class="prayer-notif" value="Fajr" checked onchange="saveNotifSettings()">
-            <span class="prayer-toggle-btn">
-              <i class="fas fa-cloud-moon"></i>
-              <span>الفجر</span>
-            </span>
-          </label>
-          <label class="prayer-toggle-item">
-            <input type="checkbox" class="prayer-notif" value="Dhuhr" checked onchange="saveNotifSettings()">
-            <span class="prayer-toggle-btn">
-              <i class="fas fa-sun"></i>
-              <span>الظهر</span>
-            </span>
-          </label>
-          <label class="prayer-toggle-item">
-            <input type="checkbox" class="prayer-notif" value="Asr" checked onchange="saveNotifSettings()">
-            <span class="prayer-toggle-btn">
-              <i class="fas fa-cloud-sun"></i>
-              <span>العصر</span>
-            </span>
-          </label>
-          <label class="prayer-toggle-item">
-            <input type="checkbox" class="prayer-notif" value="Maghrib" checked onchange="saveNotifSettings()">
-            <span class="prayer-toggle-btn">
-              <i class="fas fa-sun"></i>
-              <span>المغرب</span>
-            </span>
-          </label>
-          <label class="prayer-toggle-item">
-            <input type="checkbox" class="prayer-notif" value="Isha" checked onchange="saveNotifSettings()">
-            <span class="prayer-toggle-btn">
-              <i class="fas fa-moon"></i>
-              <span>العشاء</span>
-            </span>
-          </label>
-        </div>
-        
-        <div class="settings-divider"></div>
-        
-        <!-- إشعار تجريبي -->
-        <button class="btn-primary-full" onclick="testNotification()">
-          <i class="fas fa-paper-plane"></i> إرسال إشعار تجريبي
+
+      <!-- التبويبات -->
+      <div class="zakat-tabs">
+        <button class="zakat-tab active" data-zakat="money" onclick="switchZakat('money')">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>المال</span>
         </button>
-        
-        <div class="settings-note">
-          <i class="fas fa-info-circle"></i>
-          <span>للحصول على أفضل النتائج: ثبّت التطبيق على شاشة هاتفك واسمح بالإشعارات.</span>
+        <button class="zakat-tab" data-zakat="gold" onclick="switchZakat('gold')">
+          <i class="fas fa-ring"></i>
+          <span>الذهب</span>
+        </button>
+        <button class="zakat-tab" data-zakat="silver" onclick="switchZakat('silver')">
+          <i class="fas fa-circle"></i>
+          <span>الفضة</span>
+        </button>
+        <button class="zakat-tab" data-zakat="trade" onclick="switchZakat('trade')">
+          <i class="fas fa-store"></i>
+          <span>التجارة</span>
+        </button>
+        <button class="zakat-tab" data-zakat="crops" onclick="switchZakat('crops')">
+          <i class="fas fa-seedling"></i>
+          <span>الزروع</span>
+        </button>
+      </div>
+
+      <!-- 1. زكاة المال -->
+      <div class="zakat-panel active" id="zakat-money">
+        <div class="card">
+          <div class="card-title-bar">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>زكاة المال (النقود)</span>
+          </div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label class="form-label">المبلغ الإجمالي (ر.ي)</label>
+              <input type="number" class="form-input" id="moneyAmount" placeholder="0" oninput="calcZakatMoney()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">سعر جرام الذهب اليوم (ر.ي)</label>
+              <input type="number" class="form-input" id="goldPrice" placeholder="0" value="35000" oninput="calcZakatMoney()">
+              <small style="color:var(--text-muted);font-size:11px;">النصاب = 85 جرام × سعر الجرام</small>
+            </div>
+            <div class="zakat-info-box">
+              <div class="zakat-info-row">
+                <span>النصاب (85 جرام ذهب)</span>
+                <strong id="nisabMoney">0 ر.ي</strong>
+              </div>
+              <div class="zakat-info-row">
+                <span>حالة المال</span>
+                <strong id="moneyStatus">—</strong>
+              </div>
+            </div>
+            <div class="zakat-result" id="moneyResult" style="display:none;">
+              <div class="zakat-result-label">الزكاة الواجبة (2.5%)</div>
+              <div class="zakat-result-value" id="moneyZakat">0 ر.ي</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. زكاة الذهب -->
+      <div class="zakat-panel" id="zakat-gold">
+        <div class="card">
+          <div class="card-title-bar">
+            <i class="fas fa-ring"></i>
+            <span>زكاة الذهب</span>
+          </div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label class="form-label">وزن الذهب (جرام)</label>
+              <input type="number" class="form-input" id="goldWeight" placeholder="0" oninput="calcZakatGold()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">نوع الذهب</label>
+              <select class="form-input" id="goldType" onchange="calcZakatGold()">
+                <option value="cash">نقود / سبائك</option>
+                <option value="jewelry">حلي (للاستعمال)</option>
+              </select>
+            </div>
+            <div class="zakat-info-box">
+              <div class="zakat-info-row">
+                <span>النصاب</span>
+                <strong>85 جرام</strong>
+              </div>
+              <div class="zakat-info-row">
+                <span>حالة الوزن</span>
+                <strong id="goldStatus">—</strong>
+              </div>
+            </div>
+            <div class="zakat-result" id="goldResult" style="display:none;">
+              <div class="zakat-result-label">الزكاة الواجبة</div>
+              <div class="zakat-result-value" id="goldZakat">0 جرام</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. زكاة الفضة -->
+      <div class="zakat-panel" id="zakat-silver">
+        <div class="card">
+          <div class="card-title-bar">
+            <i class="fas fa-circle"></i>
+            <span>زكاة الفضة</span>
+          </div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label class="form-label">وزن الفضة (جرام)</label>
+              <input type="number" class="form-input" id="silverWeight" placeholder="0" oninput="calcZakatSilver()">
+            </div>
+            <div class="zakat-info-box">
+              <div class="zakat-info-row">
+                <span>النصاب</span>
+                <strong>595 جرام</strong>
+              </div>
+              <div class="zakat-info-row">
+                <span>حالة الوزن</span>
+                <strong id="silverStatus">—</strong>
+              </div>
+            </div>
+            <div class="zakat-result" id="silverResult" style="display:none;">
+              <div class="zakat-result-label">الزكاة الواجبة</div>
+              <div class="zakat-result-value" id="silverZakat">0 جرام</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. زكاة التجارة -->
+      <div class="zakat-panel" id="zakat-trade">
+        <div class="card">
+          <div class="card-title-bar">
+            <i class="fas fa-store"></i>
+            <span>زكاة التجارة</span>
+          </div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label class="form-label">قيمة البضاعة (ر.ي)</label>
+              <input type="number" class="form-input" id="tradeGoods" placeholder="0" oninput="calcZakatTrade()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">النقود الموجودة (ر.ي)</label>
+              <input type="number" class="form-input" id="tradeCash" placeholder="0" oninput="calcZakatTrade()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">الديون المستحقة عليك (ر.ي)</label>
+              <input type="number" class="form-input" id="tradeDebts" placeholder="0" oninput="calcZakatTrade()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">سعر جرام الذهب (ر.ي)</label>
+              <input type="number" class="form-input" id="tradeGoldPrice" value="35000" oninput="calcZakatTrade()">
+            </div>
+            <div class="zakat-info-box">
+              <div class="zakat-info-row">
+                <span>صافي المال الخاضع للزكاة</span>
+                <strong id="tradeNet">0 ر.ي</strong>
+              </div>
+              <div class="zakat-info-row">
+                <span>النصاب</span>
+                <strong id="tradeNisab">0 ر.ي</strong>
+              </div>
+            </div>
+            <div class="zakat-result" id="tradeResult" style="display:none;">
+              <div class="zakat-result-label">الزكاة الواجبة (2.5%)</div>
+              <div class="zakat-result-value" id="tradeZakat">0 ر.ي</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. زكاة الزروع -->
+      <div class="zakat-panel" id="zakat-crops">
+        <div class="card">
+          <div class="card-title-bar">
+            <i class="fas fa-seedling"></i>
+            <span>زكاة الزروع والثمار</span>
+          </div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label class="form-label">نوع المحصول</label>
+              <select class="form-input" id="cropType" onchange="calcZakatCrops()">
+                <option value="staple">حبوب (قمح، أرز...)</option>
+                <option value="dates">تمر</option>
+                <option value="grapes">زبيب</option>
+                <option value="other">أخرى</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الوزن (كيلوجرام)</label>
+              <input type="number" class="form-input" id="cropWeight" placeholder="0" oninput="calcZakatCrops()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">طريقة الري</label>
+              <select class="form-input" id="cropIrrigation" onchange="calcZakatCrops()">
+                <option value="rain">بماء المطر (10%)</option>
+                <option value="irrigation">بالسقي (5%)</option>
+              </select>
+            </div>
+            <div class="zakat-info-box">
+              <div class="zakat-info-row">
+                <span>النصاب (5 أوسق)</span>
+                <strong>~653 كجم</strong>
+              </div>
+              <div class="zakat-info-row">
+                <span>حالة الوزن</span>
+                <strong id="cropsStatus">—</strong>
+              </div>
+            </div>
+            <div class="zakat-result" id="cropsResult" style="display:none;">
+              <div class="zakat-result-label">الزكاة الواجبة</div>
+              <div class="zakat-result-value" id="cropsZakat">0 كجم</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ملاحظة -->
+      <div class="settings-note" style="margin-top:15px;">
+        <i class="fas fa-info-circle"></i>
+        <span>هذه الحاسبة تقديرية. للأحكام الشرعية الدقيقة، يرجى مراجعة أهل العلم.</span>
+      </div>
+
+    </div>
+
+    <!-- ═══ صفحة الإعدادات ═══ -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-cog"></i> الإعدادات</h1>
+      </div>
+      
+      <!-- إشعارات الأذان -->
+      <div class="card" style="margin-bottom:15px;">
+        <div class="card-title-bar">
+          <i class="fas fa-bell"></i>
+          <span>إشعارات الأذان</span>
         </div>
         
+        <div style="padding:20px;">
+          <div class="settings-item">
+            <div class="settings-info">
+              <div class="settings-label">تفعيل إشعارات الأذان</div>
+              <div class="settings-desc" id="notifStatusText">غير مفعّلة</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifToggle" onchange="toggleNotifications()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div id="notifOptions" style="display:none;">
+            <div class="settings-divider"></div>
+            
+            <div class="settings-section-title">
+              <i class="fas fa-clock"></i> وقت التنبيه
+            </div>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="notifTiming" value="0" checked onchange="saveNotifSettings()">
+                <span>عند الأذان</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="notifTiming" value="5" onchange="saveNotifSettings()">
+                <span>قبل 5 دقائق</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="notifTiming" value="10" onchange="saveNotifSettings()">
+                <span>قبل 10 دقائق</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="notifTiming" value="15" onchange="saveNotifSettings()">
+                <span>قبل 15 دقيقة</span>
+              </label>
+            </div>
+            
+            <div class="settings-divider"></div>
+            
+            <div class="settings-section-title">
+              <i class="fas fa-mosque"></i> الصلوات المُنبَّه عليها
+            </div>
+            <div class="prayers-toggle-grid">
+              <label class="prayer-toggle-item">
+                <input type="checkbox" class="prayer-notif" value="Fajr" checked onchange="saveNotifSettings()">
+                <span class="prayer-toggle-btn">
+                  <i class="fas fa-cloud-moon"></i>
+                  <span>الفجر</span>
+                </span>
+              </label>
+              <label class="prayer-toggle-item">
+                <input type="checkbox" class="prayer-notif" value="Dhuhr" checked onchange="saveNotifSettings()">
+                <span class="prayer-toggle-btn">
+                  <i class="fas fa-sun"></i>
+                  <span>الظهر</span>
+                </span>
+              </label>
+              <label class="prayer-toggle-item">
+                <input type="checkbox" class="prayer-notif" value="Asr" checked onchange="saveNotifSettings()">
+                <span class="prayer-toggle-btn">
+                  <i class="fas fa-cloud-sun"></i>
+                  <span>العصر</span>
+                </span>
+              </label>
+              <label class="prayer-toggle-item">
+                <input type="checkbox" class="prayer-notif" value="Maghrib" checked onchange="saveNotifSettings()">
+                <span class="prayer-toggle-btn">
+                  <i class="fas fa-sun"></i>
+                  <span>المغرب</span>
+                </span>
+              </label>
+              <label class="prayer-toggle-item">
+                <input type="checkbox" class="prayer-notif" value="Isha" checked onchange="saveNotifSettings()">
+                <span class="prayer-toggle-btn">
+                  <i class="fas fa-moon"></i>
+                  <span>العشاء</span>
+                </span>
+              </label>
+            </div>
+            
+            <div class="settings-divider"></div>
+            
+            <button class="btn-primary-full" onclick="testNotification()">
+              <i class="fas fa-paper-plane"></i> إرسال إشعار تجريبي
+            </button>
+            
+            <div class="settings-note">
+              <i class="fas fa-info-circle"></i>
+              <span>للحصول على أفضل النتائج: ثبّت التطبيق على شاشة هاتفك واسمح بالإشعارات.</span>
+            </div>
+          </div>
+        </div>
       </div>
       
-    </div>
-  </div>
-  
-  <!-- معلومات عن التطبيق -->
-  <div class="card">
-    <div class="card-title-bar">
-      <i class="fas fa-info-circle"></i>
-      <span>عن التطبيق</span>
-    </div>
-    <div style="padding:20px;text-align:center;">
-      <div style="font-size:40px;margin-bottom:10px;">🕌</div>
-      <div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:5px;">مُسلِمي</div>
-      <div style="font-size:12px;color:var(--text-muted);">الإصدار 1.0.0</div>
-    </div>
-  </div>
-</div>
-    <!-- ═══ صفحة الإحصائيات ═══ -->
-    <div class="page" id="page-stats">
-      <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-chart-line"></i> إحصائياتي</h1>
-      </div>
-      
+      <!-- عن التطبيق -->
       <div class="card">
-        <div class="stats-placeholder">
-          <i class="fas fa-chart-pie" style="font-size:80px;color:var(--primary);margin-bottom:15px;"></i>
-          <h3>قريبًا بإذن الله</h3>
-          <p style="color:var(--text-muted);margin-top:8px;">متابعة عباداتك اليومية</p>
+        <div class="card-title-bar">
+          <i class="fas fa-info-circle"></i>
+          <span>عن التطبيق</span>
+        </div>
+        <div style="padding:20px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:10px;">🕌</div>
+          <div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:5px;">مُسلِمي</div>
+          <div style="font-size:12px;color:var(--text-muted);">الإصدار 1.0.0</div>
         </div>
       </div>
     </div>
@@ -549,9 +722,9 @@
       <span>الزكاة</span>
     </div>
     <div class="nav-btn" data-page="settings" onclick="navigateTo('settings')">
-  <i class="fas fa-cog"></i>
-  <span>الإعدادات</span>
-</div>
+      <i class="fas fa-cog"></i>
+      <span>الإعدادات</span>
+    </div>
   </nav>
 
 </div>
@@ -621,8 +794,9 @@
 <script src="js/adhkar.js"></script>
 <script src="js/quran.js"></script>
 <script src="js/tools.js"></script>
-  <script src="js/notifications.js"></script>
+<script src="js/zakat.js"></script>
+<script src="js/notifications.js"></script>
 <script src="js/main.js"></script>
 
 </body>
-  </html>
+</html>
