@@ -173,13 +173,14 @@ function navigateTo(page) {
       if (typeof initQiblaPage === 'function') initQiblaPage();
       break;
     case 'zakat':
-      // صفحة الزكاة - قريبًا
+      // صفحة الزكاة - تهيئة الحاسبة
+      if (typeof initZakat === 'function') initZakat();
       break;
     case 'settings':
       // صفحة الإعدادات - تحميل إعدادات الإشعارات
       if (typeof initNotifications === 'function') initNotifications();
       break;
   }
-
+}
 
 console.log('🌙 core.js - v' + CONFIG.VERSION);
