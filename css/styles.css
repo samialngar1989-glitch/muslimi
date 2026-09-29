@@ -1888,3 +1888,187 @@ button, input, select, textarea { font-family: inherit; }
   .qibla-arrow { width: 50px; height: 65px; }
   .qibla-angle-value { font-size: 26px; }
 }
+/* ═══════════════════════════════════════════════════ */
+/* 💰 صفحة الزكاة                                     */
+/* ═══════════════════════════════════════════════════ */
+
+/* التبويبات */
+.zakat-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.zakat-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.zakat-tab {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .2s;
+  min-width: 70px;
+}
+
+.zakat-tab i {
+  font-size: 18px;
+}
+
+.zakat-tab:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.zakat-tab.active {
+  background: var(--grad-primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(13,94,74,.25);
+}
+
+.zakat-tab.active i { color: var(--accent); }
+
+/* الألواح */
+.zakat-panel {
+  display: none;
+  animation: fadeIn .3s;
+}
+
+.zakat-panel.active { display: block; }
+
+/* صندوق المعلومات */
+.zakat-info-box {
+  background: linear-gradient(135deg, rgba(13,94,74,.08), rgba(212,167,71,.08));
+  border-radius: var(--radius-sm);
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid rgba(13,94,74,.15);
+}
+
+.zakat-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.zakat-info-row:not(:last-child) {
+  border-bottom: 1px dashed rgba(13,94,74,.15);
+}
+
+.zakat-info-row strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary);
+  direction: rtl;
+}
+
+/* النتيجة */
+.zakat-result {
+  background: linear-gradient(135deg, rgba(34,197,94,.1), rgba(6,182,212,.1));
+  border: 2px solid var(--success);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 15px;
+  text-align: center;
+  animation: resultPulse .5s;
+}
+
+@keyframes resultPulse {
+  0% { transform: scale(.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.zakat-result-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.zakat-result-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--success);
+  direction: rtl;
+  line-height: 1.2;
+}
+
+/* حقول الإدخال (تحسين) */
+.form-input, .form-select {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.form-input[type="number"] {
+  direction: rtl;
+  text-align: right;
+}
+
+.form-label {
+  font-size: 13px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* التحقق من النصاب */
+.zakat-below-nisab {
+  background: linear-gradient(135deg, rgba(245,158,11,.1), rgba(239,68,68,.1)) !important;
+  border-color: var(--warning) !important;
+}
+
+.zakat-below-nisab .zakat-result-value {
+  color: var(--warning) !important;
+}
+
+/* الموبايل */
+@media (max-width: 480px) {
+  .zakat-tab {
+    padding: 8px 10px;
+    min-width: 60px;
+    font-size: 10px;
+  }
+  .zakat-tab i { font-size: 16px; }
+  .zakat-result-value { font-size: 24px; }
+  .zakat-info-row { font-size: 12px; }
+  .zakat-info-row strong { font-size: 13px; }
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* 📊 حقول الأرقام الكبيرة (تحسين عام)               */
+/* ═══════════════════════════════════════════════════ */
+
+/* إخفاء أسهم input number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
