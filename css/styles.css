@@ -1580,3 +1580,311 @@ button, input, select, textarea { font-family: inherit; }
 .nav-btn {
   min-width: 60px;
 }
+/* ═══════════════════════════════════════════════════ */
+/* 🧭 صفحة القبلة                                     */
+/* ═══════════════════════════════════════════════════ */
+
+.qibla-location-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, rgba(13,94,74,.08), rgba(212,167,71,.08));
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  border: 1px solid rgba(13,94,74,.15);
+}
+
+.qibla-location-bar i { color: var(--accent); }
+
+/* حاوية البوصلة */
+.compass-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.compass-wrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  max-width: 90vw;
+  max-height: 90vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* حلقة البوصلة */
+.compass-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 50% 50%, 
+      rgba(255,255,255,1) 0%, 
+      rgba(248,250,252,1) 60%, 
+      rgba(241,245,249,1) 100%);
+  border: 8px solid var(--primary);
+  box-shadow: 
+    0 0 0 4px rgba(212,167,71,.3),
+    0 15px 40px rgba(13,94,74,.25),
+    inset 0 0 30px rgba(13,94,74,.08);
+  transition: transform .15s ease-out;
+}
+
+/* علامات الاتجاهات */
+.compass-direction {
+  position: absolute;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--primary);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.9);
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+
+.compass-n { top: -15px; left: 50%; transform: translateX(-50%); color: var(--accent-dark); border-color: var(--accent); }
+.compass-e { right: -15px; top: 50%; transform: translateY(-50%); }
+.compass-s { bottom: -15px; left: 50%; transform: translateX(-50%); }
+.compass-w { left: -15px; top: 50%; transform: translateY(-50%); }
+
+/* علامات صغيرة */
+.compass-tick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 12px;
+  background: var(--text-muted);
+  opacity: .4;
+  transform-origin: center 150px;
+  margin-left: -1px;
+}
+
+/* سهم القبلة */
+.qibla-arrow-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s ease-out;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.qibla-arrow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 80px;
+  filter: drop-shadow(0 4px 10px rgba(212,167,71,.5));
+}
+
+.qibla-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* مركز البوصلة */
+.compass-center {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 5px rgba(13,94,74,.15), 0 2px 8px rgba(0,0,0,.2);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compass-center-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* عرض الزاوية */
+.qibla-angle-display {
+  text-align: center;
+  padding: 15px 25px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--primary);
+  box-shadow: var(--shadow-sm);
+  min-width: 200px;
+}
+
+.qibla-angle-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--primary);
+  direction: ltr;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.qibla-angle-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* حالة الاتجاه */
+.qibla-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--bg-hover);
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all .3s;
+}
+
+.qibla-status i { font-size: 16px; color: var(--primary); }
+
+.qibla-status.aligned {
+  background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.08));
+  color: var(--success);
+  border: 1px solid rgba(34,197,94,.3);
+}
+
+.qibla-status.aligned i { color: var(--success); }
+
+/* رسالة النجاح */
+.qibla-success {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(6,182,212,.15));
+  border: 2px solid var(--success);
+  border-radius: var(--radius);
+  animation: successPulse 2s ease-in-out infinite;
+  width: 100%;
+  max-width: 350px;
+}
+
+@keyframes successPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,.3); }
+  50% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(34,197,94,0); }
+}
+
+.qibla-success > i {
+  font-size: 32px;
+  color: var(--success);
+}
+
+.qibla-success-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--success);
+  margin-bottom: 3px;
+}
+
+.qibla-success-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* تعليمات */
+.qibla-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+
+.instruction-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.instruction-item i {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(13,94,74,.1), rgba(212,167,71,.1));
+  border-radius: 10px;
+  color: var(--primary);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* أزرار */
+.qibla-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* وضع الخطأ / غير مدعوم */
+.qibla-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.qibla-error i {
+  font-size: 60px;
+  color: var(--warning);
+}
+
+.qibla-error h3 {
+  color: var(--text);
+  font-size: 18px;
+  margin: 0;
+}
+
+.qibla-error p {
+  font-size: 13px;
+  max-width: 300px;
+  line-height: 1.7;
+}
+
+@media (max-width: 380px) {
+  .compass-wrapper { width: 260px; height: 260px; }
+  .qibla-arrow { width: 50px; height: 65px; }
+  .qibla-angle-value { font-size: 26px; }
+}
