@@ -305,24 +305,56 @@ updateNavigationButtons();
   }
 }
 
+let currentReaderMode = 'mushaf'; // mushaf أو list
+
 function renderSurah(surahData) {
-  const content = document.getElementById('surahContent');
+  const surahMeta = surahsList.find(s => s.number === surahData.number);
+  const surahName = surahData.name || (surahMeta ? surahMeta.name : '');
+  const juzNumber = getJuzFromSurah(surahData.number);
+  
+  // ═══ وضع المصحف ═══
+  if (currentReaderMode === 'mushaf') {
+    renderMushafMode(surahData, surahName, juzNumber);
+  } else {
+    // ═══ وضع القائمة ═══
+    renderListMode(surahData);
+  }
+}
+
+function renderMushafMode(surahData, surahName, juzNumber) {
+  const mushafContainer = document.getElementById('mushafContainer');
+  const mushafContent = document.getElementById('mushafContent');
+  const surahHeader = document.getElementById('mushafSurahHeader');
+  const pageNumber = document.getElementById('mushafPageNumber');
+  const frame = document.querySelector('.mushaf-frame');
   
   // تطبيق الثيم
-  content.setAttribute('data-theme', currentReaderTheme);
+  if (frame) frame.setAttribute('data-theme', currentReaderTheme);
+  
+  // اسم السورة في الأعلى
+  if (surahHeader) {
+    const typeText = surahData.revelationType === 'Meccan' ? 'مكية' : 'مدنية';
+    surahHeader.textContent = `سورة ${surahName} • ${typeText} • ${surahData.numberOfAyahs} آية`;
+  }
+  
+  // رقم الصفحة (تقديري)
+  if (pageNumber) {
+    pageNumber.textContent = `﴿ ${surahData.number} ﴾`;
+  }
+  
+  // بناء المحتوى
+  let html = '';
   
   // البسملة (إلا في التوبة والفاتحة)
-  let html = '';
   if (surahData.number !== 1 && surahData.number !== 9) {
     html += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
   }
   
-  // الآيات
   html += '<div class="ayah-container">';
   surahData.ayahs.forEach(ayah => {
     let text = ayah.text;
     
-    // إزالة البسملة من أول آية في السور (إلا الفاتحة)
+    // إزالة البسملة من أول آية
     if (surahData.number !== 1 && ayah.numberInSurah === 1) {
       const bismillah = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
       if (text.startsWith(bismillah)) {
@@ -330,6 +362,51 @@ function renderSurah(surahData) {
       }
     }
     
+    html += `
+      <span class="ayah-text">${escapeHtml(text)}</span>
+      <span class="ayah-number">${toArabicNumber(ayah.numberInSurah)}</span>
+    `;
+  });
+  html += '</div>';
+  
+  mushafContent.innerHTML = html;
+  mushafContent.style.fontSize = currentFontSize + 'px';
+  
+  // إظهار/إخفاء
+  mushafContainer.style.display = 'flex';
+  document.getElementById('surahContent').style.display = 'none';
+  
+  // تحديث حجم
+  const ayahContainer = mushafContent.querySelector('.ayah-container');
+  if (ayahContainer) {
+    ayahContainer.style.fontSize = currentFontSize + 'px';
+  }
+}
+
+function renderListMode(surahData) {
+  const content = document.getElementById('surahContent');
+  
+  // إخفاء المصحف
+  document.getElementById('mushafContainer').style.display = 'none';
+  content.style.display = 'block';
+  
+  // تطبيق الثيم
+  content.setAttribute('data-theme', currentReaderTheme);
+  
+  let html = '';
+  if (surahData.number !== 1 && surahData.number !== 9) {
+    html += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
+  }
+  
+  html += '<div class="ayah-container">';
+  surahData.ayahs.forEach(ayah => {
+    let text = ayah.text;
+    if (surahData.number !== 1 && ayah.numberInSurah === 1) {
+      const bismillah = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+      if (text.startsWith(bismillah)) {
+        text = text.substring(bismillah.length).trim();
+      }
+    }
     html += `
       <span class="ayah-text">${escapeHtml(text)}</span>
       <span class="ayah-number">${ayah.numberInSurah}</span>
@@ -340,11 +417,44 @@ function renderSurah(surahData) {
   content.innerHTML = html;
   content.style.fontSize = currentFontSize + 'px';
   
-  // تحديث حجم الآيات
   const ayahContainer = content.querySelector('.ayah-container');
   if (ayahContainer) {
     ayahContainer.style.fontSize = currentFontSize + 'px';
   }
+}
+
+// تحويل رقم إلى رقم عربي
+function toArabicNumber(num) {
+  const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  return String(num).split('').map(d => arabicDigits[parseInt(d)] || d).join('');
+}
+
+// تحديد الجزء من رقم السورة (تقريبي)
+function getJuzFromSurah(surahNumber) {
+  const juzMap = [1, 1, 3, 5, 6, 7, 8, 9, 10, 11, 11, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 18, 19, 19, 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 23, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 27, 28, 28, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
+  return juzMap[surahNumber - 1] || 1;
+}
+
+// وضع القارئ (مصحف / قائمة)
+function setReaderMode(mode) {
+  currentReaderMode = mode;
+  
+  document.getElementById('modeMushaf').classList.toggle('active', mode === 'mushaf');
+  document.getElementById('modeList').classList.toggle('active', mode === 'list');
+  
+  localStorage.setItem('quran_reader_mode', mode);
+  
+  // إعادة عرض السورة الحالية
+  if (currentSurahNumber) {
+    const surahData = getSurahFromDB(currentSurahNumber).then(data => {
+      if (data) renderSurah(data);
+    });
+  }
+}
+
+// التمرير للأعلى
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function closeSurahReader() {
@@ -381,21 +491,31 @@ function changeFontSize(delta) {
   currentFontSize = Math.max(18, Math.min(48, currentFontSize + delta));
   document.getElementById('fontSizeDisplay').textContent = currentFontSize;
   
+  // تحديث كلا الوضعين
   const content = document.getElementById('surahContent');
-  content.style.fontSize = currentFontSize + 'px';
+  if (content) {
+    content.style.fontSize = currentFontSize + 'px';
+    const ayahContainer = content.querySelector('.ayah-container');
+    if (ayahContainer) ayahContainer.style.fontSize = currentFontSize + 'px';
+  }
   
-  const ayahContainer = content.querySelector('.ayah-container');
-  if (ayahContainer) {
-    ayahContainer.style.fontSize = currentFontSize + 'px';
+  const mushafContent = document.getElementById('mushafContent');
+  if (mushafContent) {
+    mushafContent.style.fontSize = currentFontSize + 'px';
+    const ayahContainer = mushafContent.querySelector('.ayah-container');
+    if (ayahContainer) ayahContainer.style.fontSize = currentFontSize + 'px';
   }
   
   localStorage.setItem('quran_font_size', currentFontSize);
 }
-
 function setReaderTheme(theme) {
   currentReaderTheme = theme;
+  
   const content = document.getElementById('surahContent');
-  content.setAttribute('data-theme', theme);
+  if (content) content.setAttribute('data-theme', theme);
+  
+  const frame = document.querySelector('.mushaf-frame');
+  if (frame) frame.setAttribute('data-theme', theme);
   
   // تحديث الأزرار النشطة
   ['themeLight', 'themeSepia', 'themeDark'].forEach(id => {
@@ -443,10 +563,21 @@ async function initQuran() {
     }
     
     const savedTheme = localStorage.getItem('quran_reader_theme') || 'light';
-    currentReaderTheme = savedTheme;
-    
-    // تحميل قائمة السور
-    await loadSurahsList();
+currentReaderTheme = savedTheme;
+
+const savedMode = localStorage.getItem('quran_reader_mode') || 'mushaf';
+currentReaderMode = savedMode;
+
+// تحديث الأزرار
+setTimeout(() => {
+  const modeMushaf = document.getElementById('modeMushaf');
+  const modeList = document.getElementById('modeList');
+  if (modeMushaf) modeMushaf.classList.toggle('active', savedMode === 'mushaf');
+  if (modeList) modeList.classList.toggle('active', savedMode === 'list');
+}, 500);
+
+// تحميل قائمة السور
+await loadSurahsList();
     
     // عرض بطاقة المتابعة
     await renderResumeCard();
