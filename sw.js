@@ -1,12 +1,12 @@
-const CACHE_NAME = 'muslimi-v9';
+const CACHE_NAME = 'muslimi-v10';
 const URLS_TO_CACHE = [
   './', './index.html',
   './css/styles.css',
   './js/core.js', './js/prayer.js', './js/adhkar.js',
-  './js/quran.js', './js/tools.js', './js/main.js',
+  './js/quran.js', './js/tools.js', './js/notifications.js',
+  './js/zakat.js', './js/main.js',
   './manifest.json'
 ];
-
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(URLS_TO_CACHE).catch(() => {})));
   self.skipWaiting();
