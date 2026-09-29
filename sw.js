@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muslimi-v6';
+const CACHE_NAME = 'muslimi-v9';
 const URLS_TO_CACHE = [
   './', './index.html',
   './css/styles.css',
