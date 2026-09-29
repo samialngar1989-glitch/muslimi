@@ -31,12 +31,12 @@ async function detectLocation() {
       return;
     }
     
+    // ═══ محاولة سريعة أولاً (بدون GPS) ═══
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         userLocation.lat = position.coords.latitude;
         userLocation.lng = position.coords.longitude;
         
-        // عكس الترميز للحصول على اسم المدينة
         try {
           const geoRes = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.lat}&lon=${userLocation.lng}&accept-language=ar`
@@ -55,62 +55,84 @@ async function detectLocation() {
           userLocation.city = 'موقعك';
         }
         
-        // حفظ في التخزين المحلي
         localStorage.setItem('userLocation', JSON.stringify(userLocation));
-        
         resolve(userLocation);
       },
       (error) => {
         console.warn('فشل تحديد الموقع:', error);
-        showToast('يرجى السماح بالوصول للموقع', 'warning');
-        resolve(null);
+        // ═══ الحل: استخدم مكة افتراضيًا ═══
+        userLocation.lat = 21.4225;
+        userLocation.lng = 39.8262;
+        userLocation.city = 'مكة المكرمة';
+        localStorage.setItem('userLocation', JSON.stringify(userLocation));
+        resolve(userLocation);
       },
       {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 3600000 // ساعة واحدة
+        enableHighAccuracy: false,  // ⚡ لا نستخدم GPS الدقيق
+        timeout: 5000,               // ⚡ 5 ثوانٍ فقط
+        maximumAge: 3600000          // ⚡ استخدم cache لمدة ساعة
       }
     );
   });
 }
-
 // ═══════════════════════════════════════════════════════════
 // 🕌 جلب مواقيت الصلاة
 // ═══════════════════════════════════════════════════════════
 async function fetchPrayerTimes() {
+async function fetchPrayerTimes() {
   try {
-    // إذا لم يكن الموقع معروفًا
-    if (!userLocation.lat) {
-      // جرّب من التخزين
-      const saved = localStorage.getItem('userLocation');
-      if (saved) {
+    // ═══ 1. جرّب الموقع المحفوظ أولاً ═══
+    const saved = localStorage.getItem('userLocation');
+    if (saved) {
+      try {
         userLocation = JSON.parse(saved);
-      } else {
-        // اطلب الموقع
-        await detectLocation();
-      }
+      } catch (e) {}
     }
     
-    // إذا فشل تحديد الموقع، استخدم مكة
+    // ═══ 2. إذا لم يوجد موقع، استخدم مكة ═══
     if (!userLocation.lat) {
       userLocation.lat = 21.4225;
       userLocation.lng = 39.8262;
       userLocation.city = 'مكة المكرمة';
     }
     
+    // ═══ 3. اعرض الموقع فورًا ═══
+    updateLocationDisplay();
+    
+    // ═══ 4. جرّب المواقيت المحفوظة لليوم ═══
     const today = new Date();
     const dateStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
     
+    const cached = localStorage.getItem('prayerTimes');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed.date === dateStr) {
+          prayerTimes = parsed.times;
+          renderPrayerTimes(parsed.times);
+          updateCountdown();
+          console.log('✅ المواقيت من الذاكرة المحلية');
+          // نكمل لتحديث المواقيت من API في الخلفية
+        }
+      } catch (e) {}
+    }
+    
+    // ═══ 5. اجلب من API ═══
     const url = `${CONFIG.PRAYER_API}/timings/${dateStr}?latitude=${userLocation.lat}&longitude=${userLocation.lng}&method=${CONFIG.DEFAULT_METHOD}`;
     
-    const res = await fetch(url);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثوانٍ كحد أقصى
+    
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
     const data = await res.json();
     
     if (!data.data || !data.data.timings) {
       throw new Error('فشل جلب المواقيت');
     }
     
-    // تنظيف المواقيت (إزالة المنطقة الزمنية)
+    // تنظيف المواقيت
     const timings = data.data.timings;
     const cleanTimes = {};
     Object.keys(timings).forEach(key => {
@@ -119,7 +141,7 @@ async function fetchPrayerTimes() {
     
     prayerTimes = cleanTimes;
     
-    // حفظ في التخزين
+    // حفظ
     localStorage.setItem('prayerTimes', JSON.stringify({
       date: dateStr,
       times: cleanTimes
@@ -127,23 +149,28 @@ async function fetchPrayerTimes() {
     
     // تحديث الواجهة
     renderPrayerTimes(cleanTimes);
-    updateLocationDisplay();
     updateHijriDate(data.data.date.hijri);
     updateCountdown();
+    
+    console.log('✅ المواقيت محدّثة من API');
     
     return cleanTimes;
     
   } catch (error) {
     console.error('خطأ في جلب المواقيت:', error);
     
-    // جرّب من التخزين
+    // ═══ 6. جرّب من التخزين عند الفشل ═══
     const cached = localStorage.getItem('prayerTimes');
     if (cached) {
-      const parsed = JSON.parse(cached);
-      prayerTimes = parsed.times;
-      renderPrayerTimes(parsed.times);
-      updateCountdown();
-      showToast('عرض آخر مواقيت محفوظة', 'warning');
+      try {
+        const parsed = JSON.parse(cached);
+        prayerTimes = parsed.times;
+        renderPrayerTimes(parsed.times);
+        updateCountdown();
+        showToast('عرض آخر مواقيت محفوظة', 'warning');
+      } catch (e) {
+        showToast('فشل تحميل المواقيت', 'error');
+      }
     } else {
       showToast('فشل جلب المواقيت — تحقق من الإنترنت', 'error');
     }
