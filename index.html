@@ -237,20 +237,121 @@
 </div>
 
     <!-- ═══ صفحة القبلة ═══ -->
-    <div class="page" id="page-qibla">
-      <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
-      </div>
+    <!-- ═══ صفحة القبلة ═══ -->
+<div class="page" id="page-qibla">
+  <div class="page-header">
+    <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
+  </div>
+
+  <!-- معلومات الموقع -->
+  <div class="qibla-location-bar" id="qiblaLocationBar">
+    <i class="fas fa-map-marker-alt"></i>
+    <span id="qiblaLocation">جاري تحديد الموقع...</span>
+  </div>
+
+  <!-- البوصلة -->
+  <div class="compass-container">
+    <div class="compass-wrapper" id="compassWrapper">
       
-      <div class="card">
-        <div class="qibla-placeholder">
-          <i class="fas fa-compass" style="font-size:80px;color:var(--primary);margin-bottom:15px;"></i>
-          <h3>قريبًا بإذن الله</h3>
-          <p style="color:var(--text-muted);margin-top:8px;">بوصلة دقيقة نحو الكعبة المشرفة</p>
+      <!-- حلقة البوصلة -->
+      <div class="compass-ring">
+        <!-- الاتجاهات الأصلية -->
+        <div class="compass-direction compass-n">N</div>
+        <div class="compass-direction compass-e">E</div>
+        <div class="compass-direction compass-s">S</div>
+        <div class="compass-direction compass-w">W</div>
+        
+        <!-- علامات صغيرة -->
+        <div class="compass-tick" style="transform: rotate(45deg);"></div>
+        <div class="compass-tick" style="transform: rotate(135deg);"></div>
+        <div class="compass-tick" style="transform: rotate(225deg);"></div>
+        <div class="compass-tick" style="transform: rotate(315deg);"></div>
+      </div>
+
+      <!-- سهم القبلة -->
+      <div class="qibla-arrow-container" id="qiblaArrow">
+        <div class="qibla-arrow">
+          <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- جسم السهم -->
+            <path d="M50 5 L75 65 L50 55 L25 65 Z" 
+                  fill="url(#arrowGradient)" 
+                  stroke="#0d5e4a" 
+                  stroke-width="2"
+                  stroke-linejoin="round"/>
+            <!-- رأس الكعبة -->
+            <rect x="40" y="0" width="20" height="20" 
+                  fill="#0f172a" 
+                  stroke="#d4a747" 
+                  stroke-width="2"
+                  rx="2"/>
+            <text x="50" y="15" font-size="12" text-anchor="middle" fill="#d4a747" font-weight="bold">🕋</text>
+            <!-- تعريف التدرج -->
+            <defs>
+              <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#d4a747"/>
+                <stop offset="100%" stop-color="#b8862e"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
+      </div>
+
+      <!-- مركز البوصلة -->
+      <div class="compass-center">
+        <div class="compass-center-dot"></div>
+      </div>
+
+    </div>
+
+    <!-- زاوية القبلة -->
+    <div class="qibla-angle-display" id="qiblaAngleDisplay">
+      <div class="qibla-angle-value" id="qiblaAngleValue">—°</div>
+      <div class="qibla-angle-label">اتجاه القبلة من الشمال</div>
+    </div>
+
+    <!-- حالة الاتجاه -->
+    <div class="qibla-status" id="qiblaStatus">
+      <i class="fas fa-compass"></i>
+      <span>جاري معايرة البوصلة...</span>
+    </div>
+
+    <!-- رسالة النجاح -->
+    <div class="qibla-success" id="qiblaSuccess" style="display:none;">
+      <i class="fas fa-check-circle"></i>
+      <div>
+        <div class="qibla-success-title">أنت متجه نحو القبلة</div>
+        <div class="qibla-success-sub">الآن يمكنك الصلاة 🕌</div>
       </div>
     </div>
 
+    <!-- تعليمات -->
+    <div class="qibla-instructions">
+      <div class="instruction-item">
+        <i class="fas fa-mobile-alt"></i>
+        <span>أمسك هاتفك أفقيًا</span>
+      </div>
+      <div class="instruction-item">
+        <i class="fas fa-rotate"></i>
+        <span>حرّك الهاتف على شكل ∞ للمعايرة</span>
+      </div>
+      <div class="instruction-item">
+        <i class="fas fa-location-arrow"></i>
+        <span>اتجه حتى يقترب السهم من الأعلى</span>
+      </div>
+    </div>
+
+    <!-- أزرار -->
+    <div class="qibla-actions">
+      <button class="btn-sm" onclick="recalibrateQibla()">
+        <i class="fas fa-sync-alt"></i> إعادة معايرة
+      </button>
+      <button class="btn-sm" onclick="reloadQiblaLocation()">
+        <i class="fas fa-map-marker-alt"></i> تحديث الموقع
+      </button>
+    </div>
+
+  </div>
+</div>
     <!-- ═══ صفحة التقويم ═══ -->
     <div class="page" id="page-calendar">
       <div class="page-header">
