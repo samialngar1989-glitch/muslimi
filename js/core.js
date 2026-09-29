@@ -151,6 +151,35 @@ function navigateTo(page) {
   if (navEl) navEl.classList.add('active');
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  
+  // ═══ تهيئة كل صفحة عند فتحها ═══
+  switch (page) {
+    case 'home':
+      // الصفحة الرئيسية - المواقيت تُحدّث تلقائيًا
+      break;
+    case 'adhkar':
+      // صفحة الأذكار - لا تحتاج تهيئة خاصة
+      break;
+    case 'quran':
+      // إذا لم تُحمّل قائمة السور بعد
+      if (typeof surahsList !== 'undefined' && (!surahsList || surahsList.length === 0)) {
+        if (typeof initQuran === 'function') initQuran();
+      }
+      // عرض بطاقة المتابعة
+      if (typeof renderResumeCard === 'function') renderResumeCard();
+      break;
+    case 'qibla':
+      // صفحة القبلة - نشغّل البوصلة
+      if (typeof initQiblaPage === 'function') initQiblaPage();
+      break;
+    case 'zakat':
+      // صفحة الزكاة - قريبًا
+      break;
+    case 'settings':
+      // صفحة الإعدادات - تحميل إعدادات الإشعارات
+      if (typeof initNotifications === 'function') initNotifications();
+      break;
+  }
+
 
 console.log('🌙 core.js - v' + CONFIG.VERSION);
