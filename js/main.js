@@ -30,10 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ═══ تحديث التواريخ ═══
   updateGregorianDate();
-
-  // ═══ جلب المواقيت ═══
-  await fetchPrayerTimes();
-  startNextPrayerCountdown();
+// ═══ جلب المواقيت (لا ننتظر) ═══
+fetchPrayerTimes();  // بدون await — ليبدأ فورًا
+startNextPrayerCountdown();
 // ═══ تهيئة القرآن ═══
 await initQuran();
   // ═══ تهيئة الإشعارات ═══
