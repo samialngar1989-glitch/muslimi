@@ -31,7 +31,6 @@ async function detectLocation() {
       return;
     }
     
-    // ═══ محاولة سريعة أولاً (بدون GPS) ═══
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         userLocation.lat = position.coords.latitude;
@@ -60,7 +59,7 @@ async function detectLocation() {
       },
       (error) => {
         console.warn('فشل تحديد الموقع:', error);
-        // ═══ الحل: استخدم مكة افتراضيًا ═══
+        // استخدم مكة افتراضيًا
         userLocation.lat = 21.4225;
         userLocation.lng = 39.8262;
         userLocation.city = 'مكة المكرمة';
@@ -68,17 +67,17 @@ async function detectLocation() {
         resolve(userLocation);
       },
       {
-        enableHighAccuracy: false,  // ⚡ لا نستخدم GPS الدقيق
-        timeout: 5000,               // ⚡ 5 ثوانٍ فقط
-        maximumAge: 3600000          // ⚡ استخدم cache لمدة ساعة
+        enableHighAccuracy: false,
+        timeout: 5000,
+        maximumAge: 3600000
       }
     );
   });
 }
+
 // ═══════════════════════════════════════════════════════════
 // 🕌 جلب مواقيت الصلاة
 // ═══════════════════════════════════════════════════════════
-async function fetchPrayerTimes() {
 async function fetchPrayerTimes() {
   try {
     // ═══ 1. جرّب الموقع المحفوظ أولاً ═══
@@ -112,7 +111,6 @@ async function fetchPrayerTimes() {
           renderPrayerTimes(parsed.times);
           updateCountdown();
           console.log('✅ المواقيت من الذاكرة المحلية');
-          // نكمل لتحديث المواقيت من API في الخلفية
         }
       } catch (e) {}
     }
@@ -121,7 +119,7 @@ async function fetchPrayerTimes() {
     const url = `${CONFIG.PRAYER_API}/timings/${dateStr}?latitude=${userLocation.lat}&longitude=${userLocation.lng}&method=${CONFIG.DEFAULT_METHOD}`;
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثوانٍ كحد أقصى
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -255,7 +253,7 @@ async function changeLocation() {
 // ═══════════════════════════════════════════════════════════
 function startNextPrayerCountdown() {
   if (nextPrayerInterval) clearInterval(nextPrayerInterval);
-  nextPrayerInterval = setInterval(updateCountdown, 30000); // كل 30 ثانية
+  nextPrayerInterval = setInterval(updateCountdown, 30000);
 }
 
 console.log('🕌 prayer.js تم التحميل');
