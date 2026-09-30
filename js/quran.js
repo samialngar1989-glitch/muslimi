@@ -432,7 +432,7 @@ function getJuzFromSurah(surahNumber) {
   return juzMap[surahNumber - 1] || 1;
 }
 
-// وضع القارئ (مصحف / قائمة)
+// وضع القارئ (مصحف / قائمة) 
 function setReaderMode(mode) {
   currentReaderMode = mode;
   
