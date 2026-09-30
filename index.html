@@ -44,10 +44,9 @@
   <!-- المحتوى -->
   <main class="main-content">
     
-    <!-- ═══ الصفحة الرئيسية: مواقيت الصلاة ═══ -->
+    <!-- ═══ الصفحة الرئيسية ═══ -->
     <div class="page active" id="page-home">
       
-      <!-- بطاقة الترحيب -->
       <div class="welcome-card">
         <div class="hijri-date" id="hijriDate">جاري التحميل...</div>
         <div class="gregorian-date" id="gregorianDate"></div>
@@ -57,7 +56,6 @@
         </div>
       </div>
 
-      <!-- العدّاد للصلاة القادمة -->
       <div class="next-prayer-card">
         <div class="next-prayer-label">الصلاة القادمة</div>
         <div class="next-prayer-name" id="nextPrayerName">—</div>
@@ -65,7 +63,6 @@
         <div class="next-prayer-time" id="nextPrayerTime">—</div>
       </div>
 
-      <!-- بطاقة مواقيت الصلاة -->
       <div class="prayer-times-card">
         <div class="card-title-bar">
           <i class="fas fa-clock"></i>
@@ -146,49 +143,43 @@
         <h1 class="page-title"><i class="fas fa-book-open"></i> القرآن الكريم</h1>
       </div>
       
-      <!-- بطاقة متابعة القراءة -->
       <div id="resumeCardContainer"></div>
 
-      <!-- معلومات التخزين -->
       <div class="quran-info-bar" id="quranInfoBar">
         <i class="fas fa-database"></i>
         <span id="quranCacheInfo">جاري التحميل...</span>
       </div>
       
-      <!-- تبويبات البحث -->
-<div class="quran-tabs">
-  <button class="quran-tab active" data-mode="surahs" onclick="switchQuranMode('surahs')">
-    <i class="fas fa-list"></i>
-    <span>السور</span>
-  </button>
-  <button class="quran-tab" data-mode="search" onclick="switchQuranMode('search')">
-    <i class="fas fa-search"></i>
-    <span>بحث</span>
-  </button>
-</div>
+      <div class="quran-tabs">
+        <button class="quran-tab active" data-mode="surahs" onclick="switchQuranMode('surahs')">
+          <i class="fas fa-list"></i>
+          <span>السور</span>
+        </button>
+        <button class="quran-tab" data-mode="search" onclick="switchQuranMode('search')">
+          <i class="fas fa-search"></i>
+          <span>بحث</span>
+        </button>
+      </div>
 
-<!-- وضع السور -->
-<div id="quranModeSurahs">
-  <div class="quran-search-bar">
-    <i class="fas fa-search"></i>
-    <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
-  </div>
-</div>
+      <div id="quranModeSurahs">
+        <div class="quran-search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
+        </div>
+      </div>
 
-<!-- وضع البحث في الآيات -->
-<div id="quranModeSearch" style="display:none;">
-  <div class="quran-search-bar">
-    <i class="fas fa-search"></i>
-    <input type="text" id="ayahSearch" placeholder="ابحث عن كلمة أو آية في القرآن كله..." onkeydown="if(event.key==='Enter') searchInQuran()">
-    <button class="btn-sm" onclick="searchInQuran()" style="padding:6px 12px;font-size:12px;">
-      <i class="fas fa-search"></i>
-    </button>
-  </div>
-  
-  <div id="searchResults"></div>
-</div>
+      <div id="quranModeSearch" style="display:none;">
+        <div class="quran-search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="ayahSearch" placeholder="ابحث عن كلمة أو آية في القرآن كله..." onkeydown="if(event.key==='Enter') searchInQuran()">
+          <button class="btn-sm" onclick="searchInQuran()" style="padding:6px 12px;font-size:12px;">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        
+        <div id="searchResults"></div>
+      </div>
       
-      <!-- قائمة السور -->
       <div class="surahs-list" id="surahsList">
         <div class="loading-state">
           <i class="fas fa-spinner fa-spin"></i>
@@ -197,116 +188,25 @@
       </div>
     </div>
 
-    <!-- ═══ قارئ السورة ═══ -->
     <!-- ═══ قارئ السورة (نمط المصحف) ═══ -->
-<div class="page" id="page-surah-reader">
-  
-  <!-- هيدر القارئ -->
-  <div class="reader-header">
-    <button class="reader-back-btn" onclick="closeSurahReader()">
-      <i class="fas fa-arrow-right"></i>
-    </button>
-    <div class="reader-title-info">
-      <div class="reader-surah-name" id="readerSurahName">—</div>
-      <div class="reader-surah-subtitle" id="readerSurahSubtitle">—</div>
-    </div>
-    <button class="reader-settings-btn" onclick="toggleReaderSettings()">
-      <i class="fas fa-cog"></i>
-    </button>
-  </div>
-  
-  <!-- إعدادات القارئ -->
-  <div class="reader-settings hidden" id="readerSettings">
-    <div class="reader-setting-item">
-      <label><i class="fas fa-text-height"></i> حجم الخط</label>
-      <div class="font-size-controls">
-        <button onclick="changeFontSize(-2)">−</button>
-        <span id="fontSizeDisplay">24</span>
-        <button onclick="changeFontSize(2)">+</button>
-      </div>
-    </div>
-    <div class="reader-setting-item">
-      <label><i class="fas fa-palette"></i> الوضع</label>
-      <div class="theme-toggle">
-        <button onclick="setReaderTheme('light')" id="themeLight">☀️</button>
-        <button onclick="setReaderTheme('sepia')" id="themeSepia">📜</button>
-        <button onclick="setReaderTheme('dark')" id="themeDark">🌙</button>
-      </div>
-    </div>
-    <div class="reader-setting-item">
-      <label><i class="fas fa-book"></i> نمط العرض</label>
-      <div class="theme-toggle">
-        <button onclick="setReaderMode('mushaf')" id="modeMushaf" class="active">📖 مصحف</button>
-        <button onclick="setReaderMode('list')" id="modeList">📋 قائمة</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- شريط استئناف القراءة -->
-  <div id="resumeBarContainer"></div>
-
-  <!-- حالة التحميل -->
-  <div id="readerLoading" class="reader-loading" style="display:none;">
-    <i class="fas fa-spinner fa-spin"></i>
-    <p>جاري تحميل السورة...</p>
-    <div class="progress-bar-container">
-      <div class="progress-bar-fill" id="readerProgress"></div>
-    </div>
-  </div>
-  
-  <!-- 🕌 صفحة المصحف -->
-  <div class="mushaf-container" id="mushafContainer" style="display:none;">
-    <div class="mushaf-frame">
+    <div class="page" id="page-surah-reader">
       
-      <!-- زخرفة علوية -->
-      <div class="mushaf-top-decoration">
-        <div class="mushaf-corner left"></div>
-        <div class="mushaf-surah-header" id="mushafSurahHeader">—</div>
-        <div class="mushaf-corner right"></div>
+      <!-- هيدر القارئ -->
+      <div class="reader-header">
+        <button class="reader-back-btn" onclick="closeSurahReader()">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <div class="reader-title-info">
+          <div class="reader-surah-name" id="readerSurahName">—</div>
+          <div class="reader-surah-subtitle" id="readerSurahSubtitle">—</div>
+        </div>
+        <button class="reader-settings-btn" onclick="toggleReaderSettings()">
+          <i class="fas fa-cog"></i>
+        </button>
       </div>
       
-      <!-- محتوى السورة -->
-      <div class="mushaf-content" id="mushafContent"></div>
-      
-      <!-- زخرفة سفلية -->
-      <div class="mushaf-bottom-decoration">
-        <div class="mushaf-corner left"></div>
-        <div class="mushaf-page-number" id="mushafPageNumber">1</div>
-        <div class="mushaf-corner right"></div>
-      </div>
-      
-    </div>
-  </div>
-  
-  <!-- 📋 نمط القائمة (القديم) -->
-  <div class="surah-content" id="surahContent" style="display:none;"></div>
-  
-  <!-- زر الحفظ اليدوي -->
-  <button class="save-marker-btn" id="saveMarkerBtn" onclick="saveCurrentMarker()" title="حفظ موضع القراءة" style="display:none;">
-    <i class="fas fa-bookmark"></i>
-  </button>
-
-  <!-- التنقل بين السور -->
-  <div class="reader-footer">
-    <button class="reader-nav-btn" onclick="goToPrevSurah()">
-      <i class="fas fa-chevron-right"></i>
-      <span>السابق</span>
-    </button>
-    <button class="reader-nav-btn" onclick="scrollToTop()">
-      <i class="fas fa-arrow-up"></i>
-      <span>للأعلى</span>
-    </button>
-    <button class="reader-nav-btn" onclick="goToNextSurah()">
-      <span>التالي</span>
-      <i class="fas fa-chevron-left"></i>
-    </button>
-  </div>
-  
-</div>
-<!-- ═══ نهاية page-surah-reader ═══ -->
-      
-      <!-- شريط التحكم بحجم الخط -->
-      <div class="reader-settings" id="readerSettings" style="display:none;">
+      <!-- إعدادات القارئ -->
+      <div class="reader-settings hidden" id="readerSettings">
         <div class="reader-setting-item">
           <label><i class="fas fa-text-height"></i> حجم الخط</label>
           <div class="font-size-controls">
@@ -323,6 +223,13 @@
             <button onclick="setReaderTheme('dark')" id="themeDark">🌙</button>
           </div>
         </div>
+        <div class="reader-setting-item">
+          <label><i class="fas fa-book"></i> نمط العرض</label>
+          <div class="theme-toggle">
+            <button onclick="setReaderMode('mushaf')" id="modeMushaf" class="active">📖 مصحف</button>
+            <button onclick="setReaderMode('list')" id="modeList">📋 قائمة</button>
+          </div>
+        </div>
       </div>
       
       <!-- شريط استئناف القراءة -->
@@ -337,8 +244,29 @@
         </div>
       </div>
       
-      <!-- محتوى السورة -->
-      <div class="surah-content" id="surahContent"></div>
+      <!-- صفحة المصحف -->
+      <div class="mushaf-container" id="mushafContainer" style="display:none;">
+        <div class="mushaf-frame">
+          
+          <div class="mushaf-top-decoration">
+            <div class="mushaf-corner left"></div>
+            <div class="mushaf-surah-header" id="mushafSurahHeader">—</div>
+            <div class="mushaf-corner right"></div>
+          </div>
+          
+          <div class="mushaf-content" id="mushafContent"></div>
+          
+          <div class="mushaf-bottom-decoration">
+            <div class="mushaf-corner left"></div>
+            <div class="mushaf-page-number" id="mushafPageNumber">1</div>
+            <div class="mushaf-corner right"></div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- نمط القائمة -->
+      <div class="surah-content" id="surahContent" style="display:none;"></div>
       
       <!-- زر الحفظ اليدوي -->
       <button class="save-marker-btn" id="saveMarkerBtn" onclick="saveCurrentMarker()" title="حفظ موضع القراءة" style="display:none;">
@@ -349,14 +277,20 @@
       <div class="reader-footer">
         <button class="reader-nav-btn" onclick="goToPrevSurah()">
           <i class="fas fa-chevron-right"></i>
-          <span>السورة السابقة</span>
+          <span>السابق</span>
+        </button>
+        <button class="reader-nav-btn" onclick="scrollToTop()">
+          <i class="fas fa-arrow-up"></i>
+          <span>للأعلى</span>
         </button>
         <button class="reader-nav-btn" onclick="goToNextSurah()">
-          <span>السورة التالية</span>
+          <span>التالي</span>
           <i class="fas fa-chevron-left"></i>
         </button>
       </div>
+      
     </div>
+    <!-- ═══ نهاية قارئ السورة ═══ -->
 
     <!-- ═══ صفحة القبلة ═══ -->
     <div class="page" id="page-qibla">
@@ -364,17 +298,14 @@
         <h1 class="page-title"><i class="fas fa-compass"></i> اتجاه القبلة</h1>
       </div>
 
-      <!-- معلومات الموقع -->
       <div class="qibla-location-bar" id="qiblaLocationBar">
         <i class="fas fa-map-marker-alt"></i>
         <span id="qiblaLocation">جاري تحديد الموقع...</span>
       </div>
 
-      <!-- البوصلة -->
       <div class="compass-container">
         <div class="compass-wrapper" id="compassWrapper">
           
-          <!-- حلقة البوصلة -->
           <div class="compass-ring">
             <div class="compass-direction compass-n">N</div>
             <div class="compass-direction compass-e">E</div>
@@ -387,7 +318,6 @@
             <div class="compass-tick" style="transform: rotate(315deg);"></div>
           </div>
 
-          <!-- سهم القبلة -->
           <div class="qibla-arrow-container" id="qiblaArrow">
             <div class="qibla-arrow">
               <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
@@ -412,26 +342,22 @@
             </div>
           </div>
 
-          <!-- مركز البوصلة -->
           <div class="compass-center">
             <div class="compass-center-dot"></div>
           </div>
 
         </div>
 
-        <!-- زاوية القبلة -->
         <div class="qibla-angle-display" id="qiblaAngleDisplay">
           <div class="qibla-angle-value" id="qiblaAngleValue">—°</div>
           <div class="qibla-angle-label">اتجاه القبلة من الشمال</div>
         </div>
 
-        <!-- حالة الاتجاه -->
         <div class="qibla-status" id="qiblaStatus">
           <i class="fas fa-compass"></i>
           <span>جاري معايرة البوصلة...</span>
         </div>
 
-        <!-- رسالة النجاح -->
         <div class="qibla-success" id="qiblaSuccess" style="display:none;">
           <i class="fas fa-check-circle"></i>
           <div>
@@ -440,7 +366,6 @@
           </div>
         </div>
 
-        <!-- تعليمات -->
         <div class="qibla-instructions">
           <div class="instruction-item">
             <i class="fas fa-mobile-alt"></i>
@@ -456,7 +381,6 @@
           </div>
         </div>
 
-        <!-- أزرار -->
         <div class="qibla-actions">
           <button class="btn-sm" onclick="recalibrateQibla()">
             <i class="fas fa-sync-alt"></i> إعادة معايرة
@@ -474,7 +398,6 @@
         <h1 class="page-title"><i class="fas fa-hand-holding-usd"></i> حاسبة الزكاة</h1>
       </div>
 
-      <!-- التبويبات -->
       <div class="zakat-tabs">
         <button class="zakat-tab active" data-zakat="money" onclick="switchZakat('money')">
           <i class="fas fa-money-bill-wave"></i>
@@ -498,7 +421,6 @@
         </button>
       </div>
 
-      <!-- 1. زكاة المال -->
       <div class="zakat-panel active" id="zakat-money">
         <div class="card">
           <div class="card-title-bar">
@@ -533,7 +455,6 @@
         </div>
       </div>
 
-      <!-- 2. زكاة الذهب -->
       <div class="zakat-panel" id="zakat-gold">
         <div class="card">
           <div class="card-title-bar">
@@ -570,7 +491,6 @@
         </div>
       </div>
 
-      <!-- 3. زكاة الفضة -->
       <div class="zakat-panel" id="zakat-silver">
         <div class="card">
           <div class="card-title-bar">
@@ -600,7 +520,6 @@
         </div>
       </div>
 
-      <!-- 4. زكاة التجارة -->
       <div class="zakat-panel" id="zakat-trade">
         <div class="card">
           <div class="card-title-bar">
@@ -642,7 +561,6 @@
         </div>
       </div>
 
-      <!-- 5. زكاة الزروع -->
       <div class="zakat-panel" id="zakat-crops">
         <div class="card">
           <div class="card-title-bar">
@@ -688,7 +606,6 @@
         </div>
       </div>
 
-      <!-- ملاحظة -->
       <div class="settings-note" style="margin-top:15px;">
         <i class="fas fa-info-circle"></i>
         <span>هذه الحاسبة تقديرية. للأحكام الشرعية الدقيقة، يرجى مراجعة أهل العلم.</span>
@@ -802,62 +719,65 @@
           </div>
         </div>
       </div>
-      <!-- 🎨 الثيمات -->
-<div class="card" style="margin-bottom:15px;">
-  <div class="card-title-bar">
-    <i class="fas fa-palette"></i>
-    <span>الألوان والثيمات</span>
-  </div>
-  <div style="padding:20px;">
-    <div class="themes-grid">
-      <button class="theme-item active" data-theme-name="green" onclick="changeAppTheme('green')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#0d5e4a,#094438);"></div>
-        <div class="theme-name">🟢 الأخضر</div>
-      </button>
       
-      <button class="theme-item" data-theme-name="blue" onclick="changeAppTheme('blue')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"></div>
-        <div class="theme-name">🔵 الأزرق</div>
-      </button>
+      <!-- الثيمات -->
+      <div class="card" style="margin-bottom:15px;">
+        <div class="card-title-bar">
+          <i class="fas fa-palette"></i>
+          <span>الألوان والثيمات</span>
+        </div>
+        <div style="padding:20px;">
+          <div class="themes-grid">
+            <button class="theme-item active" data-theme-name="green" onclick="changeAppTheme('green')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#0d5e4a,#094438);"></div>
+              <div class="theme-name">🟢 الأخضر</div>
+            </button>
+            
+            <button class="theme-item" data-theme-name="blue" onclick="changeAppTheme('blue')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);"></div>
+              <div class="theme-name">🔵 الأزرق</div>
+            </button>
+            
+            <button class="theme-item" data-theme-name="purple" onclick="changeAppTheme('purple')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);"></div>
+              <div class="theme-name">🟣 البنفسجي</div>
+            </button>
+            
+            <button class="theme-item" data-theme-name="gold" onclick="changeAppTheme('gold')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#d4a747,#b8862e);"></div>
+              <div class="theme-name">🟡 الذهبي</div>
+            </button>
+            
+            <button class="theme-item" data-theme-name="pink" onclick="changeAppTheme('pink')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#ec4899,#be185d);"></div>
+              <div class="theme-name">🌸 الوردي</div>
+            </button>
+            
+            <button class="theme-item" data-theme-name="dark" onclick="changeAppTheme('dark')">
+              <div class="theme-preview" style="background:linear-gradient(135deg,#1e293b,#0f172a);"></div>
+              <div class="theme-name">🌙 الداكن</div>
+            </button>
+          </div>
+        </div>
+      </div>
       
-      <button class="theme-item" data-theme-name="purple" onclick="changeAppTheme('purple')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);"></div>
-        <div class="theme-name">🟣 البنفسجي</div>
-      </button>
+      <!-- إدارة البيانات -->
+      <div class="card" style="margin-bottom:15px;">
+        <div class="card-title-bar">
+          <i class="fas fa-database"></i>
+          <span>إدارة البيانات</span>
+        </div>
+        <div style="padding:20px;">
+          <button class="btn-primary-full" onclick="clearQuranCache()" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+            <i class="fas fa-broom"></i> مسح السور المحفوظة
+          </button>
+          <div class="settings-note" style="margin-top:12px;">
+            <i class="fas fa-info-circle"></i>
+            <span>سيُعاد تحميل السور عند فتحها — استخدم هذا إذا واجهت مشاكل.</span>
+          </div>
+        </div>
+      </div>
       
-      <button class="theme-item" data-theme-name="gold" onclick="changeAppTheme('gold')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#d4a747,#b8862e);"></div>
-        <div class="theme-name">🟡 الذهبي</div>
-      </button>
-      
-      <button class="theme-item" data-theme-name="pink" onclick="changeAppTheme('pink')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#ec4899,#be185d);"></div>
-        <div class="theme-name">🌸 الوردي</div>
-      </button>
-      
-      <button class="theme-item" data-theme-name="dark" onclick="changeAppTheme('dark')">
-        <div class="theme-preview" style="background:linear-gradient(135deg,#1e293b,#0f172a);"></div>
-        <div class="theme-name">🌙 الداكن</div>
-      </button>
-    </div>
-  </div>
-</div>
-     <!-- إدارة البيانات -->
-<div class="card" style="margin-bottom:15px;">
-  <div class="card-title-bar">
-    <i class="fas fa-database"></i>
-    <span>إدارة البيانات</span>
-  </div>
-  <div style="padding:20px;">
-    <button class="btn-primary-full" onclick="clearQuranCache()" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
-      <i class="fas fa-broom"></i> مسح السور المحفوظة
-    </button>
-    <div class="settings-note" style="margin-top:12px;">
-      <i class="fas fa-info-circle"></i>
-      <span>سيُعاد تحميل السور عند فتحها — استخدم هذا إذا واجهت مشاكل.</span>
-    </div>
-  </div>
-</div> 
       <!-- عن التطبيق -->
       <div class="card">
         <div class="card-title-bar">
@@ -972,7 +892,7 @@
 <script src="js/tools.js"></script>
 <script src="js/zakat.js"></script>
 <script src="js/notifications.js"></script>
-  <script src="js/themes.js"></script>
+<script src="js/themes.js"></script>
 <script src="js/main.js"></script>
 
 </body>
