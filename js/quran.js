@@ -353,14 +353,10 @@ function renderMushafMode(surahData, surahName, juzNumber) {
   html += '<div class="ayah-container">';
   surahData.ayahs.forEach(ayah => {
     let text = ayah.text;
-    
-    // إزالة البسملة من أول آية
-    if (surahData.number !== 1 && ayah.numberInSurah === 1) {
-      const bismillah = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
-      if (text.startsWith(bismillah)) {
-        text = text.substring(bismillah.length).trim();
-      }
-    }
+// إزالة البسملة من أول آية (بطرق متعددة)
+if (surahData.number !== 1 && ayah.numberInSurah === 1) {
+  text = removeBismillah(text);
+}
     
     html += `
       <span class="ayah-text">${escapeHtml(text)}</span>
@@ -394,9 +390,10 @@ function renderListMode(surahData) {
   content.setAttribute('data-theme', currentReaderTheme);
   
   let html = '';
-  if (surahData.number !== 1 && surahData.number !== 9) {
-    html += `<div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
-  }
+  // إزالة البسملة من أول آية (بطرق متعددة)
+if (surahData.number !== 1 && ayah.numberInSurah === 1) {
+  text = removeBismillah(text);
+}
   
   html += '<div class="ayah-container">';
   surahData.ayahs.forEach(ayah => {
