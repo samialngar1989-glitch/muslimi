@@ -273,23 +273,21 @@ async function updateCacheInfo() {
 async function openSurah(surahNumber) {
   currentSurahNumber = surahNumber;
   
-  // ═══ إخفاء أي عناصر من صفحات أخرى ═══
+  // ═══ إخفاء كل الصفحات ═══
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
   
   // ═══ إظهار صفحة القارئ ═══
   document.getElementById('page-surah-reader').classList.add('active');
   
-  // ═══ تفعيل زر القرآن في الشريط السفلي ═══
+  // ═══ تفعيل زر القرآن ═══
   const quranNav = document.querySelector('.nav-btn[data-page="quran"]');
   if (quranNav) quranNav.classList.add('active');
   
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // ═══ إظهار reader-footer ═══
+  const readerFooter = document.querySelector('.reader-footer');
+  if (readerFooter) readerFooter.style.display = 'flex';
   
-  // ... باقي الدالة كما هو
-  // الانتقال لصفحة القارئ
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-surah-reader').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
   const surahMeta = surahsList.find(s => s.number === surahNumber);
@@ -319,6 +317,7 @@ async function openSurah(surahNumber) {
   const progress = document.getElementById('readerProgress');
   if (progress) progress.style.width = '0%';
   
+  // ... باقي الدالة كما هي في الملف السابق
   // ═══ 1. جرّب من IndexedDB أولاً ═══
   let surahData = null;
   try {
