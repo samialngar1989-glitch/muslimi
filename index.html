@@ -155,11 +155,38 @@
         <span id="quranCacheInfo">جاري التحميل...</span>
       </div>
       
-      <!-- شريط البحث -->
-      <div class="quran-search-bar">
-        <i class="fas fa-search"></i>
-        <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
-      </div>
+      <!-- تبويبات البحث -->
+<div class="quran-tabs">
+  <button class="quran-tab active" data-mode="surahs" onclick="switchQuranMode('surahs')">
+    <i class="fas fa-list"></i>
+    <span>السور</span>
+  </button>
+  <button class="quran-tab" data-mode="search" onclick="switchQuranMode('search')">
+    <i class="fas fa-search"></i>
+    <span>بحث</span>
+  </button>
+</div>
+
+<!-- وضع السور -->
+<div id="quranModeSurahs">
+  <div class="quran-search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" id="surahSearch" placeholder="ابحث عن سورة..." oninput="filterSurahs()">
+  </div>
+</div>
+
+<!-- وضع البحث في الآيات -->
+<div id="quranModeSearch" style="display:none;">
+  <div class="quran-search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" id="ayahSearch" placeholder="ابحث عن كلمة أو آية في القرآن كله..." onkeydown="if(event.key==='Enter') searchInQuran()">
+    <button class="btn-sm" onclick="searchInQuran()" style="padding:6px 12px;font-size:12px;">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+  
+  <div id="searchResults"></div>
+</div>
       
       <!-- قائمة السور -->
       <div class="surahs-list" id="surahsList">
