@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muslimi-v13';
+const CACHE_NAME = 'muslimi-v14';
 const URLS_TO_CACHE = [
   './', './index.html',
   './css/styles.css',
   './js/core.js', './js/prayer.js', './js/adhkar.js',
-  './js/quran.js', './js/tools.js', './js/notifications.js',
+  './js/quran.js', './js/search.js', './js/tools.js', './js/notifications.js',
   './js/zakat.js', './js/themes.js', './js/main.js',
   './manifest.json'
 ];
