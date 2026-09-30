@@ -481,9 +481,35 @@ async function closeSurahReader() {
 // ═══════════════════════════════════════════════════════════
 function toggleReaderSettings() {
   const settings = document.getElementById('readerSettings');
-  settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+  const btn = document.querySelector('.reader-settings-btn');
+  if (!settings) return;
+  
+  if (settings.classList.contains('hidden')) {
+    settings.classList.remove('hidden');
+    settings.classList.add('show');
+    if (btn) btn.classList.add('active');
+  } else {
+    settings.classList.add('hidden');
+    settings.classList.remove('show');
+    if (btn) btn.classList.remove('active');
+  }
 }
 
+// إغلاق الإعدادات عند الضغط خارجها
+document.addEventListener('click', function(e) {
+  const settings = document.getElementById('readerSettings');
+  const settingsBtn = document.querySelector('.reader-settings-btn');
+  
+  if (!settings || !settingsBtn) return;
+  if (settings.classList.contains('hidden')) return;
+  
+  // إذا كان الضغط خارج الإعدادات وخارج الزر
+  if (!settings.contains(e.target) && !settingsBtn.contains(e.target)) {
+    settings.classList.add('hidden');
+    settings.classList.remove('show');
+    settingsBtn.classList.remove('active');
+  }
+});
 function changeFontSize(delta) {
   currentFontSize = Math.max(18, Math.min(48, currentFontSize + delta));
   document.getElementById('fontSizeDisplay').textContent = currentFontSize;
