@@ -6,13 +6,10 @@ const CONFIG = {
   APP_NAME: 'مُسلِمي',
   VERSION: '1.0.0',
   PRAYER_API: 'https://api.aladhan.com/v1',
-  DEFAULT_METHOD: 4, // Umm Al-Qura
+  DEFAULT_METHOD: 4,
   DEFAULT_CITY: 'مكة المكرمة'
 };
 
-// ═══════════════════════════════════════════════════════════
-// 📊 المتغيرات العامة
-// ═══════════════════════════════════════════════════════════
 let userLocation = {
   lat: null,
   lng: null,
@@ -101,7 +98,6 @@ function getNextPrayer(prayers) {
     }
   }
   
-  // إذا انتهت كل صلوات اليوم، القادمة هي فجر الغد
   return { 
     key: 'Fajr', 
     name: 'الفجر', 
@@ -138,7 +134,7 @@ function highlightCurrentPrayer(nextKey) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🎨 التنقل بين الصفحات
+// 🎨 التنقل بين الصفحات (نسخة نظيفة)
 // ═══════════════════════════════════════════════════════════
 function navigateTo(page) {
   // ═══ إخفاء كل الصفحات ═══
@@ -167,21 +163,7 @@ function navigateTo(page) {
     window.autoSaveTimer = null;
   }
   
-  // ═══ متابعة التنقل العادي ═══
-  const pageEl = document.getElementById('page-' + page);
-  const navEl = document.querySelector(`.nav-btn[data-page="${page}"]`);
-  
-  if (pageEl) pageEl.classList.add('active');
-  if (navEl) navEl.classList.add('active');
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  
-  // ═══ تهيئة كل صفحة عند فتحها ═══
-  switch (page) {
-    // ... باقي الـ switch كما هو
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
-  
+  // ═══ إظهار الصفحة المطلوبة ═══
   const pageEl = document.getElementById('page-' + page);
   const navEl = document.querySelector(`.nav-btn[data-page="${page}"]`);
   
@@ -193,29 +175,22 @@ function navigateTo(page) {
   // ═══ تهيئة كل صفحة عند فتحها ═══
   switch (page) {
     case 'home':
-      // الصفحة الرئيسية - المواقيت تُحدّث تلقائيًا
       break;
     case 'adhkar':
-      // صفحة الأذكار - لا تحتاج تهيئة خاصة
       break;
     case 'quran':
-      // إذا لم تُحمّل قائمة السور بعد
       if (typeof surahsList !== 'undefined' && (!surahsList || surahsList.length === 0)) {
         if (typeof initQuran === 'function') initQuran();
       }
-      // عرض بطاقة المتابعة
       if (typeof renderResumeCard === 'function') renderResumeCard();
       break;
     case 'qibla':
-      // صفحة القبلة - نشغّل البوصلة
       if (typeof initQiblaPage === 'function') initQiblaPage();
       break;
     case 'zakat':
-      // صفحة الزكاة - تهيئة الحاسبة
       if (typeof initZakat === 'function') initZakat();
       break;
     case 'settings':
-      // صفحة الإعدادات - تحميل إعدادات الإشعارات
       if (typeof initNotifications === 'function') initNotifications();
       break;
   }
