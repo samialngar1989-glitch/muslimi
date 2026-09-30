@@ -2473,3 +2473,21 @@ html[data-app-theme="dark"] {
     padding: 6px 15px;
   }
 }
+/* ═══════════════════════════════════════════════════ */
+/* ⚙️ إخفاء/إظهار إعدادات القارئ                     */
+/* ═══════════════════════════════════════════════════ */
+
+.reader-settings.hidden {
+  display: none !important;
+}
+
+.reader-settings.show {
+  display: block !important;
+  animation: slideDown .3s;
+}
+
+/* تمييز زر الإعدادات عند الفتح */
+.reader-settings-btn.active {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
