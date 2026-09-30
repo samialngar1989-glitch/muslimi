@@ -141,6 +141,44 @@ function highlightCurrentPrayer(nextKey) {
 // 🎨 التنقل بين الصفحات
 // ═══════════════════════════════════════════════════════════
 function navigateTo(page) {
+  // ═══ إخفاء كل الصفحات ═══
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+  
+  // ═══ إخفاء أي عناصر عائمة من القارئ ═══
+  const saveMarkerBtn = document.getElementById('saveMarkerBtn');
+  if (saveMarkerBtn) saveMarkerBtn.style.display = 'none';
+  
+  const resumeBarContainer = document.getElementById('resumeBarContainer');
+  if (resumeBarContainer) resumeBarContainer.innerHTML = '';
+  
+  const settings = document.getElementById('readerSettings');
+  if (settings) {
+    settings.classList.add('hidden');
+    settings.classList.remove('show');
+  }
+  
+  const settingsBtn = document.querySelector('.reader-settings-btn');
+  if (settingsBtn) settingsBtn.classList.remove('active');
+  
+  // ═══ إيقاف الحفظ التلقائي ═══
+  if (window.autoSaveTimer) {
+    clearInterval(window.autoSaveTimer);
+    window.autoSaveTimer = null;
+  }
+  
+  // ═══ متابعة التنقل العادي ═══
+  const pageEl = document.getElementById('page-' + page);
+  const navEl = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  
+  if (pageEl) pageEl.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // ═══ تهيئة كل صفحة عند فتحها ═══
+  switch (page) {
+    // ... باقي الـ switch كما هو
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
   
