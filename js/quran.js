@@ -273,6 +273,20 @@ async function updateCacheInfo() {
 async function openSurah(surahNumber) {
   currentSurahNumber = surahNumber;
   
+  // ═══ إخفاء أي عناصر من صفحات أخرى ═══
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+  
+  // ═══ إظهار صفحة القارئ ═══
+  document.getElementById('page-surah-reader').classList.add('active');
+  
+  // ═══ تفعيل زر القرآن في الشريط السفلي ═══
+  const quranNav = document.querySelector('.nav-btn[data-page="quran"]');
+  if (quranNav) quranNav.classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // ... باقي الدالة كما هو
   // الانتقال لصفحة القارئ
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-surah-reader').classList.add('active');
